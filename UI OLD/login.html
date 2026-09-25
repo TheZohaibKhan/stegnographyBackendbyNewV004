@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegnoVault · Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#03020d;
+  --v1:#7c3aed;--v2:#6d28d9;--fu:#c026d3;--cy:#06b6d4;--pk:#f472b6;--in:#4338ca;
+  --vlt:rgba(124,58,237,.18);--flt:rgba(192,38,211,.14);--clt:rgba(6,182,212,.1);
+  --glass:rgba(255,255,255,.04);--gb:rgba(255,255,255,.09);--ghi:rgba(255,255,255,.15);
+  --t1:#f0eeff;--t2:#9b98c0;--t3:#4a4768;
+  --ok:#10b981;--err:#f43f5e;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;cursor:none}
+
+/* Custom cursor */
+#cur{position:fixed;width:10px;height:10px;border-radius:50%;background:rgba(124,58,237,.9);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:screen}
+#cur2{position:fixed;width:32px;height:32px;border-radius:50%;border:1px solid rgba(124,58,237,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .3s,height .3s}
+
+/* Stars */
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nb{position:fixed;z-index:1;pointer-events:none;border-radius:50%;filter:blur(110px);animation:nd ease-in-out infinite}
+@keyframes nd{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.07)}66%{transform:translate(-28px,20px) scale(.94)}}
+.nb1{width:750px;height:650px;top:-200px;left:-180px;background:radial-gradient(ellipse,rgba(139,92,246,.26) 0%,transparent 65%);animation-duration:22s}
+.nb2{width:620px;height:520px;bottom:-150px;right:-130px;background:radial-gradient(ellipse,rgba(217,70,239,.2) 0%,transparent 65%);animation-duration:18s;animation-delay:-8s}
+.nb3{width:480px;height:480px;top:30%;right:8%;background:radial-gradient(ellipse,rgba(34,211,238,.12) 0%,transparent 65%);animation-duration:28s;animation-delay:-15s}
+.nb4{width:380px;height:380px;bottom:15%;left:12%;background:radial-gradient(ellipse,rgba(244,114,182,.09) 0%,transparent 65%);animation-duration:20s;animation-delay:-5s}
+
+/* Grid */
+.shell{position:relative;z-index:10;height:100vh;display:grid;grid-template-columns:55% 1px 45%}
+
+/* HERO */
+.hero{display:flex;flex-direction:column;justify-content:center;padding:0 80px;gap:0}
+.brand{display:flex;align-items:center;gap:18px;margin-bottom:70px;opacity:0;animation:up .9s .05s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+.brand-icon{position:relative;width:48px;height:48px}
+.brand-icon svg{width:100%;height:100%}
+.brand-ring{animation:spin 16s linear infinite;transform-origin:24px 24px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand-name{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:2px;color:var(--t1)}
+.brand-name b{background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tag{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--cy);margin-bottom:22px;opacity:0;animation:up .9s .2s cubic-bezier(.22,1,.36,1) forwards}
+.tag::before{content:'';width:36px;height:1px;background:linear-gradient(90deg,var(--cy),transparent)}
+h1{font-family:'Syne',sans-serif;font-size:clamp(40px,4.5vw,66px);font-weight:800;line-height:1.03;letter-spacing:-2px;margin-bottom:22px;opacity:0;animation:up .9s .33s cubic-bezier(.22,1,.36,1) forwards}
+h1 .gw{display:block;background:linear-gradient(135deg,#c4b5fd 0%,#e879f9 40%,#f9a8d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(167,139,250,.5))}
+.desc{font-size:16px;font-weight:400;color:var(--t2);line-height:1.85;max-width:420px;opacity:0;animation:up .9s .44s cubic-bezier(.22,1,.36,1) forwards}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:44px;opacity:0;animation:up .9s .55s cubic-bezier(.22,1,.36,1) forwards}
+.chip{display:flex;align-items:center;gap:9px;padding:9px 18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:100px;font-size:12px;font-weight:500;color:var(--t2);letter-spacing:.3px;transition:.3s}
+.chip:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.45);color:var(--t1);background:rgba(124,58,237,.1);box-shadow:0 8px 25px rgba(124,58,237,.2)}
+.chip i{font-size:11px}
+.c1 i{color:#c4b5fd}.c2 i{color:var(--cy)}.c3 i{color:#f9a8d4}
+
+/* Divider */
+.div{background:linear-gradient(to bottom,transparent 5%,rgba(124,58,237,.15) 25%,rgba(192,38,211,.25) 50%,rgba(124,58,237,.15) 75%,transparent 95%);position:relative}
+.div::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:0 0 0 4px rgba(124,58,237,.15),0 0 24px 8px rgba(124,58,237,.55);animation:dpulse 3s ease-in-out infinite}
+@keyframes dpulse{0%,100%{box-shadow:0 0 0 4px rgba(124,58,237,.15),0 0 20px 6px rgba(124,58,237,.5)}50%{box-shadow:0 0 0 8px rgba(124,58,237,.08),0 0 40px 14px rgba(192,38,211,.6)}}
+
+/* Form side */
+.fside{display:flex;align-items:center;justify-content:center;padding:40px 64px 40px 52px}
+.fwrap{width:100%;max-width:400px;opacity:0;animation:up .9s .1s cubic-bezier(.22,1,.36,1) forwards}
+
+/* Glass card */
+.gc{background:rgba(10,8,28,.8);backdrop-filter:blur(48px) saturate(200%);-webkit-backdrop-filter:blur(48px) saturate(200%);border:1px solid rgba(255,255,255,.1);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 40px 90px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.03),0 0 80px rgba(124,58,237,.05)}
+.gc-top{height:2px;background:linear-gradient(90deg,transparent 0%,rgba(124,58,237,.9) 25%,rgba(192,38,211,1) 50%,rgba(34,211,238,.9) 75%,transparent 100%);animation:shimmer 5s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:1}}
+.gc-glow{position:absolute;top:-70px;right:-70px;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,.08) 0%,transparent 70%);pointer-events:none}
+.gc-body{padding:42px 40px}
+
+/* Card head */
+.ch{margin-bottom:34px}
+.ch-kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c4b5fd;margin-bottom:12px;display:flex;align-items:center;gap:9px;opacity:.9}
+.ch-kicker::before{content:'';width:22px;height:1px;background:linear-gradient(90deg,#c4b5fd,transparent)}
+.ch h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px}
+.ch p{font-size:14px;color:var(--t2);font-weight:400;line-height:1.6}
+
+/* Alerts */
+.al{display:none;align-items:center;gap:11px;padding:13px 17px;border-radius:14px;font-size:13px;font-weight:500;margin-bottom:24px}
+.al-e{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);color:#fda4af}
+.al-s{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#6ee7b7}
+
+/* Inputs */
+.fi{margin-bottom:20px}
+.fi-lb{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--t2);margin-bottom:10px}
+.fi-lb::before{content:'';width:12px;height:1px;background:linear-gradient(90deg,#c4b5fd,transparent)}
+.fw{position:relative}
+.fw .ico{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--t3);pointer-events:none;z-index:2;transition:.3s}
+.fw input{width:100%;padding:14px 48px 14px 47px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;color:var(--t1);font-size:15px;font-family:'Inter',sans-serif;font-weight:400;outline:none;transition:.3s}
+.fw input::placeholder{color:rgba(255,255,255,.18)}
+.fw input:focus{border-color:rgba(124,58,237,.65);background:rgba(124,58,237,.08);box-shadow:0 0 0 4px rgba(124,58,237,.12),0 0 35px rgba(124,58,237,.07)}
+.fw:has(input:focus) .ico{color:#c4b5fd}
+.fl{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,#7c3aed,#c026d3,#06b6d4);border-radius:14px;transition:.4s;box-shadow:0 0 10px rgba(124,58,237,.6)}
+.fw input:focus~.fl{width:72%}
+.eybtn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;z-index:2;padding:5px;transition:.25s}
+.eybtn:hover{color:#c4b5fd}
+
+.flink{text-align:right;margin:-6px 0 22px}
+.flink a{font-size:12.5px;color:var(--t3);text-decoration:none;font-weight:500;letter-spacing:.3px;transition:.25s}
+.flink a:hover{color:#c4b5fd}
+
+/* CTA button */
+.cta{width:100%;padding:16px;background:linear-gradient(135deg,#7c3aed 0%,#4338ca 45%,#c026d3 100%);border:none;border-radius:14px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:.6px;cursor:pointer;position:relative;overflow:hidden;transition:.35s}
+.cta-ov{position:absolute;inset:0;background:linear-gradient(135deg,#c026d3,#7c3aed,#06b6d4 160%);opacity:0;transition:.45s}
+.cta:hover .cta-ov{opacity:1}
+.cta:hover{transform:translateY(-3px);box-shadow:0 20px 55px rgba(124,58,237,.5),0 6px 20px rgba(0,0,0,.35)}
+.cta:active{transform:translateY(-1px)}
+.cta span{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px}
+
+.reg-row{text-align:center;margin-top:22px;font-size:13.5px;color:var(--t3)}
+.reg-row a{color:#c4b5fd;text-decoration:none;font-weight:600;transition:.25s}
+.reg-row a:hover{color:#e879f9;text-shadow:0 0 14px rgba(232,121,249,.5)}
+
+/* Status bar */
+.sb{position:fixed;bottom:0;left:0;right:0;z-index:300;padding:8px 34px;background:rgba(3,2,13,.93);backdrop-filter:blur(28px);border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:.6px}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:dp 2.5s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:.5;box-shadow:0 0 8px var(--ok)}50%{opacity:1;box-shadow:0 0 18px var(--ok),0 0 32px rgba(16,185,129,.35)}}
+.sb-x{color:rgba(255,255,255,.07)}
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-btn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(255,255,255,.07);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.13);border-radius:100px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.5px;text-transform:uppercase;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s;}
+.theme-btn:hover{border-color:rgba(196,181,253,.45);color:#c4b5fd;box-shadow:0 4px 24px rgba(124,58,237,.25);transform:scale(1.04);}
+.theme-btn .tb-sun{color:#FFB703;}
+
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<!-- Theme Toggle -->
+<button class="theme-btn" onclick="SV_THEME.switch('login')">
+  <i class="fas fa-sun tb-sun"></i> Light Mode
+</button>
+<canvas id="cvs"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div><div class="nb nb4"></div>
+
+<div class="shell">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#c026d3"/></linearGradient>
+            <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+          </defs>
+          <polygon points="24,2 44,14 44,34 24,46 4,34 4,14" fill="rgba(124,58,237,.1)" stroke="url(#g1)" stroke-width="1.5"/>
+          <polygon class="brand-ring" points="24,7 40,17 40,31 24,41 8,31 8,17" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1" stroke-dasharray="3 6"/>
+          <circle cx="24" cy="24" r="7" fill="none" stroke="url(#g2)" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="3" fill="url(#g1)"/>
+          <circle cx="24" cy="24" r="5" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="brand-name">STEGNO<b>VAULT</b></div>
+    </div>
+
+    <div class="tag">Covert data transmission engine</div>
+    <h1>Your secrets,<br><span class="gw">hidden in light.</span></h1>
+    <p class="desc">Military-grade steganography that embeds secret messages inside images, audio & video. Zero metadata. Zero trace. Undetectable by any scanner.</p>
+    <div class="chips">
+      <div class="chip c1"><i class="fas fa-image"></i> LSB Image Encoding</div>
+      <div class="chip c2"><i class="fas fa-waveform-lines"></i> Audio Layer Injection</div>
+      <div class="chip c3"><i class="fas fa-film"></i> Frame-Level Video</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- FORM -->
+  <div class="fside">
+    <div class="fwrap">
+      <div class="gc">
+        <div class="gc-top"></div>
+        <div class="gc-glow"></div>
+        <div class="gc-body">
+          <div class="ch">
+            <div class="ch-kicker"><i class="fas fa-satellite-dish"></i> Secure Portal</div>
+            <h2>Welcome back</h2>
+            <p>Sign in to access your encrypted vault</p>
+          </div>
+
+          <div id="ae" class="al al-e"><i class="fas fa-triangle-exclamation"></i><span id="am">Invalid credentials. Please try again.</span></div>
+          <div id="as" class="al al-s"><i class="fas fa-circle-check"></i><span id="sm"></span></div>
+
+          <form method="POST" action="/login">
+            <div class="fi">
+              <div class="fi-lb">Email Address</div>
+              <div class="fw">
+                <i class="fas fa-at ico"></i>
+                <input type="email" name="username" placeholder="you@example.com" required autocomplete="email">
+                <div class="fl"></div>
+              </div>
+            </div>
+            <div class="fi">
+              <div class="fi-lb">Password</div>
+              <div class="fw">
+                <i class="fas fa-key ico"></i>
+                <input type="password" id="pf" name="password" placeholder="Enter your password" required>
+                <button type="button" class="eybtn" onclick="toggleEye('pf',this)"><i class="fas fa-eye"></i></button>
+                <div class="fl"></div>
+              </div>
+            </div>
+            <div class="flink"><a href="/forgot-password.html">Forgot password?</a></div>
+            <button type="submit" class="cta"><div class="cta-ov"></div><span><i class="fas fa-shield-check"></i> Access Vault</span></button>
+          </form>
+          <div class="reg-row">New to StegnoVault? <a href="/register.html">Create account →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sb">
+  <div class="sb-dot"></div>
+  <span>SECURE SESSION</span><span class="sb-x">·</span>
+  <span>TLS 1.3</span><span class="sb-x">·</span>
+  <span>AES-256-GCM</span><span class="sb-x">·</span>
+  <span>STEGNOGRAPHY ENGINE v4</span>
+  <span id="clk" style="margin-left:auto"></span>
+</div>
+
+<script>
+/* ── GLOBAL THEME ENGINE ── */
+(function(){window.SV_THEME={pages:{dark:{login:'login.html',register:'register.html',forgot:'forgot-password.html',index:'index.html',admin:'admin.html','403':'403.html'},light:{login:'login-light.html',register:'register-light.html',forgot:'forgot-password-light.html',index:'index-light.html',admin:'admin-light.html','403':'403-light.html'}},get:function(){return localStorage.getItem('sv_theme')||'dark'},set:function(t){localStorage.setItem('sv_theme',t)},switch:function(k){var c=this.get(),n=c==='dark'?'light':'dark';this.set(n);var t=this.pages[n][k];if(t)window.location.href='/'+t;else window.location.reload();}};})();
+
+/* CURSOR */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+setInterval(()=>{cx+=(mx-cx)*.15;cy+=(my-cy)*.15;cur2.style.left=cx+'px';cur2.style.top=cy+'px';},16);
+document.querySelectorAll('a,button,input').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='16px';cur.style.height='16px';cur.style.background='rgba(192,38,211,.95)';cur2.style.width='44px';cur2.style.height='44px';});el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='rgba(124,58,237,.9)';cur2.style.width='32px';cur2.style.height='32px';});});
+
+/* STARS */
+(function(){const c=document.getElementById('cvs'),x=c.getContext('2d');let W,H,S=[],T=[],tk=0;const rnd=n=>Math.random()*n;function init(){W=c.width=innerWidth;H=c.height=innerHeight;S=Array.from({length:350},()=>({x:rnd(W),y:rnd(H),r:rnd(1.4)+.1,o:rnd(1),d:1,sp:rnd(.004)+.001,pur:Math.random()>.96}));}function shoot(){T.push({x:rnd(W*.65),y:rnd(H*.4),l:rnd(150)+80,s:rnd(10)+5,a:Math.PI/4+(rnd(1)-.5)*.4,t:0,m:rnd(55)+28,c:Math.random()>.5?'139,92,246':'34,211,238'});}init();addEventListener('resize',init);setTimeout(shoot,1600);setInterval(()=>{if(T.length<3)shoot();},3800);function draw(){x.clearRect(0,0,W,H);tk++;S.forEach(s=>{s.o+=s.sp*s.d;if(s.o>1){s.o=1;s.d=-1;}if(s.o<.04){s.o=.04;s.d=1;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);if(s.pur){x.fillStyle=`rgba(167,139,250,${s.o})`;x.shadowBlur=12;x.shadowColor='rgba(167,139,250,.9)';}else{x.fillStyle=`rgba(255,255,255,${s.o*.7})`;x.shadowBlur=0;}x.fill();});x.shadowBlur=0;T=T.filter(s=>{s.t++;if(s.t>s.m)return false;const p=s.t/s.m,a=p<.2?p/.2:p>.65?(1-p)/.35:1,ex=s.x+Math.cos(s.a)*s.s*s.t,ey=s.y+Math.sin(s.a)*s.s*s.t,sx=ex-Math.cos(s.a)*s.l*Math.min(p*3,1),sy=ey-Math.sin(s.a)*s.l*Math.min(p*3,1),g=x.createLinearGradient(sx,sy,ex,ey);g.addColorStop(0,`rgba(${s.c},0)`);g.addColorStop(1,`rgba(${s.c},${a*.95})`);x.beginPath();x.moveTo(sx,sy);x.lineTo(ex,ey);x.strokeStyle=g;x.lineWidth=1.8;x.shadowBlur=10;x.shadowColor=`rgba(${s.c},.8)`;x.stroke();x.shadowBlur=0;return true;});requestAnimationFrame(draw);}draw();})();
+
+/* UTILS */
+function toggleEye(id,b){const f=document.getElementById(id);f.type=f.type==='password'?'text':'password';b.querySelector('i').className=f.type==='password'?'fas fa-eye':'fas fa-eye-slash';}
+const q=new URLSearchParams(location.search);
+if(q.has('error')){document.getElementById('ae').style.display='flex';}
+if(q.has('logout')){const b=document.getElementById('as');document.getElementById('sm').textContent='Signed out securely.';b.style.display='flex';}
+if(q.has('reset')){const b=document.getElementById('as');document.getElementById('sm').textContent='Password updated — sign in now.';b.style.display='flex';}
+const clk=document.getElementById('clk');
+setInterval(()=>clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false}),1000);
+clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false});
+</script>
+</body>
+</html>

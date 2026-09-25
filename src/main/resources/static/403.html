@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegnoVault · Access Denied</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#03020d;--v1:#7c3aed;--fu:#c026d3;--cy:#06b6d4;--t1:#f0eeff;--t2:#9b98c0;--t3:#4a4768;--err:#f43f5e}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center}
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nb{position:fixed;z-index:1;pointer-events:none;border-radius:50%;filter:blur(110px);animation:nd ease-in-out infinite}
+@keyframes nd{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.07)}66%{transform:translate(-28px,20px) scale(.94)}}
+.nb1{width:600px;height:500px;top:-150px;left:-150px;background:radial-gradient(ellipse,rgba(244,63,94,.15) 0%,transparent 65%);animation-duration:22s}
+.nb2{width:500px;height:400px;bottom:-100px;right:-100px;background:radial-gradient(ellipse,rgba(124,58,237,.15) 0%,transparent 65%);animation-duration:18s;animation-delay:-8s}
+
+.wrap{position:relative;z-index:10;text-align:center;padding:40px;max-width:560px}
+
+/* Shield icon */
+.shield{width:100px;height:100px;border-radius:24px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 32px;font-size:42px;color:#fda4af;position:relative;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,.15)}50%{box-shadow:0 0 0 18px rgba(244,63,94,.0)}}
+.shield::before{content:'';position:absolute;inset:-1px;border-radius:25px;background:linear-gradient(135deg,rgba(244,63,94,.3),transparent 60%);pointer-events:none}
+
+/* Code */
+.code{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--err);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+.code::before,.code::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--err))}
+.code::after{background:linear-gradient(90deg,var(--err),transparent)}
+
+/* Heading */
+h1{font-family:'Syne',sans-serif;font-size:clamp(42px,6.5vw,80px);font-weight:800;letter-spacing:-2px;margin-bottom:10px;background:linear-gradient(135deg,#fda4af,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.sub{font-size:14.5px;color:var(--t2);margin-bottom:10px;letter-spacing:.3px}
+.msg{font-size:13px;color:var(--t3);margin-bottom:36px;line-height:1.8;max-width:400px;margin-left:auto;margin-right:auto}
+
+/* Terminal block */
+.terminal{background:rgba(0,0,0,.5);border:1px solid rgba(244,63,94,.2);border-radius:14px;padding:18px 22px;margin-bottom:36px;text-align:left}
+.t-bar{display:flex;gap:7px;margin-bottom:14px}
+.t-dot{width:10px;height:10px;border-radius:50%}
+.t-dot:nth-child(1){background:#f43f5e}.t-dot:nth-child(2){background:#f59e0b}.t-dot:nth-child(3){background:#10b981}
+.t-line{font-size:12.5px;line-height:2;color:var(--t3)}
+.t-line .kw{color:#fda4af}
+.t-line .val{color:#c4b5fd}
+.t-line .ok{color:#6ee7b7}
+.t-line .warn{color:#fcd34d}
+.cursor{display:inline-block;width:8px;height:13px;background:#c4b5fd;animation:blink .9s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Buttons */
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{padding:13px 26px;border-radius:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:.4px;cursor:pointer;text-decoration:none;transition:.3s;display:inline-flex;align-items:center;gap:9px}
+.btn-back{background:linear-gradient(135deg,#7c3aed,#4338ca 45%,#c026d3);border:none;color:#fff;position:relative;overflow:hidden}
+.btn-back::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#c026d3,#7c3aed);opacity:0;transition:.4s}
+.btn-back:hover::before{opacity:1}
+.btn-back:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(124,58,237,.4)}
+.btn-back span{position:relative;z-index:1;display:flex;align-items:center;gap:8px}
+.btn-login{background:transparent;border:1px solid rgba(244,63,94,.35);color:#fda4af}
+.btn-login:hover{background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.6)}
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-btn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(255,255,255,.07);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.13);border-radius:100px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.5px;text-transform:uppercase;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s;}
+.theme-btn:hover{border-color:rgba(196,181,253,.45);color:#c4b5fd;box-shadow:0 4px 24px rgba(124,58,237,.25);transform:scale(1.04);}
+.theme-btn .tb-sun{color:#FFB703;}
+
+
+/* ── 403 SPLIT LAYOUT ── */
+html,body{height:100vh;overflow:hidden}
+body{display:grid;grid-template-columns:1fr 1fr;background:var(--bg)}
+.split-403-left{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px;border-right:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;z-index:10}
+.split-403-right{display:flex;flex-direction:column;justify-content:center;padding:60px 70px;position:relative;z-index:10}
+/* Right side brand + info */
+.s4-brand{display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.s4-gem{width:44px;height:44px;animation:gemFl 8s ease-in-out infinite}
+@keyframes gemFl{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-7px) rotate(4deg)}70%{transform:translateY(-3px) rotate(-2deg)}}
+.s4-gem svg{width:100%;height:100%}
+.s4-bname{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:2px;color:var(--t1)}
+.s4-bname b{background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.s4-bsub{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.s4-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;color:#fda4af;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.s4-tag::before{content:'';width:20px;height:1px;background:linear-gradient(90deg,#f43f5e,transparent)}
+.s4-h{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;color:var(--t1);line-height:1.1;letter-spacing:-1px;margin-bottom:12px}
+.s4-h em{font-style:italic;background:linear-gradient(135deg,#fda4af,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.s4-desc{font-size:1rem;color:var(--t2);line-height:1.85;max-width:380px;margin-bottom:32px;font-weight:400}
+.s4-reasons{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:18px 22px;margin-bottom:28px}
+.s4-r-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:#fda4af;margin-bottom:12px;opacity:.8}
+.s4-r-item{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--t2);margin-bottom:8px}
+.s4-r-item:last-child{margin-bottom:0}
+.s4-r-item i{width:16px;text-align:center;color:#fda4af;font-size:.85rem}
+.s4-btns{display:flex;flex-direction:column;gap:10px}
+/* Left side visual elements */
+.sl-ring{position:absolute;border-radius:50%;border:1px solid rgba(244,63,94,.08);pointer-events:none}
+.sl-ring1{width:300px;height:300px;bottom:-60px;left:-60px;animation:spinR 38s linear infinite}
+.sl-ring1::before{content:'';position:absolute;top:-3px;left:50%;width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,#f43f5e,#f59e0b);transform:translateX(-50%);box-shadow:0 0 10px rgba(244,63,94,.6)}
+.sl-ring2{width:190px;height:190px;top:-35px;right:25%;border-color:rgba(124,58,237,.06);animation:spinR 22s linear infinite reverse}
+@keyframes spinR{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<!-- Theme Toggle -->
+<button class="theme-btn" onclick="SV_THEME.switch('403')">
+  <i class="fas fa-sun tb-sun"></i> Light Mode
+</button>
+<canvas id="cvs"></canvas>
+<div class="nb nb1"></div>
+<div class="nb nb2"></div>
+
+<div class="split-403-left">
+  <!-- LEFT: Visual side -->
+  <div class="shield"><i class="fas fa-shield-halved"></i></div>
+  <div class="code">Error 403</div>
+  <h1>Access Denied</h1>
+  <p class="sub" style="font-size:14.5px;color:var(--t2);margin-bottom:8px">Clearance level insufficient.</p>
+  <p class="msg" style="font-size:13px;color:var(--t3);line-height:1.8;max-width:320px;text-align:center">You do not have the required permissions to access this area.</p>
+  <div class="terminal" style="width:100%;max-width:340px;margin:24px 0 0">
+    <div class="t-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>
+    <div class="t-line"><span class="kw">STATUS</span> &nbsp;&nbsp; <span class="warn">403 FORBIDDEN</span></div>
+    <div class="t-line"><span class="kw">REQUIRED</span> &nbsp;<span class="val">ROLE_ADMIN</span></div>
+    <div class="t-line"><span class="kw">GRANTED</span> &nbsp;&nbsp;<span class="val">ROLE_USER</span></div>
+    <div class="t-line"><span class="kw">ACTION</span> &nbsp;&nbsp;&nbsp;<span class="ok">ACCESS BLOCKED</span></div>
+    <div class="t-line"><span class="kw">&gt;</span> <span class="cursor"></span></div>
+  </div>
+  <div class="sl-ring sl-ring1"></div>
+  <div class="sl-ring sl-ring2"></div>
+</div>
+
+<div class="split-403-right">
+  <!-- RIGHT: Info + actions -->
+  <div class="s4-brand">
+    <div class="s4-gem"><svg viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="slg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="50%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#c026d3"/></linearGradient><filter id="sglow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><polygon points="27,3 51,16 51,38 27,51 3,38 3,16" fill="url(#slg1)" opacity=".12" filter="url(#sglow)"/><polygon points="27,3 51,16 51,38 27,51 3,38 3,16" fill="none" stroke="url(#slg1)" stroke-width="1.5"/><polygon points="27,10 44,19 44,35 27,44 10,35 10,19" fill="url(#slg1)" opacity=".2"/><circle cx="27" cy="27" r="6" fill="url(#slg1)" opacity=".85"/></svg></div>
+    <div>
+      <div class="s4-bname">STEGNO<b>VAULT</b></div>
+      <div class="s4-bsub">Steganography Platform</div>
+    </div>
+  </div>
+  <div class="s4-tag">Error 403 · Forbidden</div>
+  <h2 class="s4-h">You Are Not<br><em>Authorized</em><br>Here.</h2>
+  <p class="s4-desc">This area of the vault is restricted to authorized personnel only. Your credentials don't grant access to this resource.</p>
+  <div class="s4-reasons">
+    <div class="s4-r-title">Why am I seeing this?</div>
+    <div class="s4-r-item"><i class="fas fa-user-slash"></i><span>Insufficient account permissions</span></div>
+    <div class="s4-r-item"><i class="fas fa-clock"></i><span>Session may have expired</span></div>
+    <div class="s4-r-item"><i class="fas fa-shield-halved"></i><span>Admin-only resource</span></div>
+    <div class="s4-r-item"><i class="fas fa-link-slash"></i><span>Incorrect or restricted URL</span></div>
+  </div>
+  <div class="s4-btns">
+    <a href="index.html" class="btn btn-back"><span><i class="fas fa-arrow-left"></i> Return to Dashboard</span></a>
+    <a href="login.html" class="btn btn-login"><i class="fas fa-right-to-bracket"></i> Sign In Again</a>
+  </div>
+</div>
+
+<script>
+/* ── GLOBAL THEME ENGINE ── */
+(function(){window.SV_THEME={pages:{dark:{login:'login.html',register:'register.html',forgot:'forgot-password.html',index:'index.html',admin:'admin.html','403':'403.html'},light:{login:'login-light.html',register:'register-light.html',forgot:'forgot-password-light.html',index:'index-light.html',admin:'admin-light.html','403':'403-light.html'}},get:function(){return(location.href.indexOf('-light')>-1)?'light':'dark';},set:function(t){localStorage.setItem('sv_theme',t);},switch:function(k){var c=this.get(),n=c==='dark'?'light':'dark';this.set(n);var t=this.pages[n][k];if(t){window.location.href='/'+t;}else{window.location.reload();}}};})();
+
+(function(){const c=document.getElementById('cvs'),x=c.getContext('2d');let W,H,S=[];const rnd=n=>Math.random()*n;function init(){W=c.width=innerWidth;H=c.height=innerHeight;S=Array.from({length:200},()=>({x:rnd(W),y:rnd(H),r:rnd(1.2)+.1,o:rnd(1),d:1,sp:rnd(.003)+.001,pur:Math.random()>.96}));}init();addEventListener('resize',init);function draw(){x.clearRect(0,0,W,H);S.forEach(s=>{s.o+=s.sp*s.d;if(s.o>1){s.o=1;s.d=-1;}if(s.o<.04){s.o=.04;s.d=1;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);if(s.pur){x.fillStyle=`rgba(244,63,94,${s.o*.6})`;x.shadowBlur=10;x.shadowColor='rgba(244,63,94,.8)';}else{x.fillStyle=`rgba(255,255,255,${s.o*.5})`;x.shadowBlur=0;}x.fill();});x.shadowBlur=0;requestAnimationFrame(draw);}draw();})();
+</script>
+</body>
+</html>

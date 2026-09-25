@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegnoVault · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--v1:#7c3aed;--v2:#a855f7;--c1:#06b6d4;--p1:#ec4899;--g1:#10b981;--o1:#f59e0b;--ink:#0f0a1e;--ink2:#1e1535;--ink3:#3d3060;--ink4:#6b5f8a;--ink5:#9b8fba;--sw:264px;--fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--fb);color:var(--ink);background:linear-gradient(145deg,#eef2ff 0%,#fdf4ff 30%,#fff1f2 60%,#ecfdf5 100%);cursor:none;-webkit-font-smoothing:antialiased}
+#cur{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--v1);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+#cur2{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(124,58,237,.5);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .35s,height .35s}
+.bg-fixed{position:fixed;inset:0;z-index:0;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:orbF ease-in-out infinite alternate}
+@keyframes orbF{0%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-35px) scale(1.1)}100%{transform:translate(-25px,45px) scale(.95)}}
+.o1{width:800px;height:750px;top:-250px;left:calc(var(--sw) - 160px);background:radial-gradient(ellipse,rgba(124,58,237,.22),rgba(168,85,247,.12),transparent 70%);animation-duration:24s}
+.o2{width:600px;height:550px;bottom:-180px;right:-120px;background:radial-gradient(ellipse,rgba(236,72,153,.18),rgba(245,158,11,.12),transparent 70%);animation-duration:19s;animation-delay:-10s}
+.o3{width:450px;height:400px;top:20%;right:3%;background:radial-gradient(ellipse,rgba(6,182,212,.16),rgba(16,185,129,.1),transparent 70%);animation-duration:28s;animation-delay:-14s}
+.grid-l{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(124,58,237,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.03) 1px,transparent 1px);background-size:52px 52px;animation:gd 28s linear infinite}
+@keyframes gd{to{background-position:52px 52px}}
+#cvs{position:fixed;inset:0;z-index:2;pointer-events:none}
+.app{display:flex;height:100vh;position:relative;z-index:10}
+/* THEME BTN */
+.theme-btn{position:fixed;top:16px;right:18px;z-index:9999;display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(255,255,255,.78);backdrop-filter:blur(30px);border:1.5px solid rgba(124,58,237,.18);border-radius:100px;cursor:pointer;font-family:var(--fm);font-size:.6rem;color:var(--ink3);letter-spacing:1px;text-transform:uppercase;box-shadow:0 4px 20px rgba(124,58,237,.1);transition:all .3s}
+.theme-btn:hover{border-color:var(--v1);color:var(--v1);box-shadow:0 4px 24px rgba(124,58,237,.2)}
+.tb-icon{background:linear-gradient(135deg,var(--v1),var(--p1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* SIDEBAR */
+.sidebar{width:var(--sw);height:100vh;position:fixed;left:0;top:0;z-index:100;background:rgba(255,255,255,.60);backdrop-filter:blur(60px) saturate(200%);-webkit-backdrop-filter:blur(60px);border-right:1px solid rgba(255,255,255,.88);display:flex;flex-direction:column;padding:22px 16px;box-shadow:4px 0 40px rgba(124,58,237,.07)}
+.sidebar::after{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(124,58,237,.18) 30%,rgba(236,72,153,.15) 70%,transparent)}
+.logo{display:flex;align-items:center;gap:13px;padding:0 4px;margin-bottom:24px}
+.logo-gem{width:40px;height:40px;flex-shrink:0;animation:gemF 8s ease-in-out infinite}
+@keyframes gemF{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-6px) rotate(4deg)}70%{transform:translateY(-3px) rotate(-2deg)}}
+.logo-gem svg{width:100%;height:100%}
+.logo-name{font-family:var(--fh);font-size:1rem;font-weight:700;letter-spacing:2px;color:var(--ink)}
+.logo-name em{background:linear-gradient(135deg,var(--v1),var(--c1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
+.logo-sub{font-family:var(--fm);font-size:.55rem;letter-spacing:2px;color:var(--ink5);text-transform:uppercase;margin-top:2px}
+.user-card{display:flex;align-items:center;gap:10px;padding:12px 13px;border-radius:16px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.1);margin-bottom:20px;cursor:pointer;transition:.3s}
+.user-card:hover{background:rgba(124,58,237,.1);transform:translateX(3px)}
+.ua-wrap{position:relative;flex-shrink:0}
+.user-avatar{width:38px;height:38px;border-radius:50%;border:2px solid rgba(124,58,237,.25);background:rgba(124,58,237,.07);display:flex;align-items:center;justify-content:center;font-size:1rem;overflow:hidden}
+.av-online{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;background:var(--g1);border:2px solid rgba(255,255,255,.9);box-shadow:0 0 6px var(--g1)}
+.user-name{font-size:.85rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-family:var(--fm);font-size:.6rem;color:var(--v1);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.nav-sec-lbl{font-family:var(--fm);font-size:.58rem;color:var(--ink5);text-transform:uppercase;letter-spacing:2px;padding:0 8px;margin:6px 0 5px}
+nav{flex:1}
+.nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:13px;color:var(--ink4);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .25s;margin-bottom:2px;text-decoration:none;position:relative;overflow:hidden;border:1px solid transparent}
+.nav-link:hover{color:var(--v1);background:rgba(124,58,237,.05)}
+.nav-link.active{color:var(--ink2);background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.14)}
+.nav-link.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(to bottom,var(--v1),var(--p1))}
+.nav-icon{width:16px;text-align:center;flex-shrink:0;font-size:.82rem}
+.sidebar-footer{border-top:1px solid rgba(124,58,237,.1);padding-top:14px;margin-top:4px}
+.logout-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px;border-radius:13px;border:1.5px solid rgba(244,63,94,.15);background:rgba(244,63,94,.05);color:#be123c;font-family:var(--fb);font-size:.85rem;font-weight:700;cursor:pointer;transition:.25s}
+.logout-btn:hover{background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.3);transform:translateY(-1px)}
+/* MAIN */
+main{margin-left:var(--sw);flex:1;height:100vh;overflow-y:auto;padding:32px 40px 80px;scrollbar-width:thin;scrollbar-color:rgba(124,58,237,.2) transparent}
+main::-webkit-scrollbar{width:4px}
+main::-webkit-scrollbar-thumb{background:rgba(124,58,237,.2);border-radius:4px}
+.section-view{display:none;animation:sIn .35s ease both}
+.section-view.active{display:block}
+@keyframes sIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* PAGE HEADER */
+.page-header{margin-bottom:28px}
+.eyebrow{font-family:var(--fm);font-size:.62rem;color:var(--v1);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';display:inline-block;width:16px;height:1.5px;background:linear-gradient(90deg,var(--v1),var(--p1));border-radius:2px}
+.page-header h1{font-family:var(--fh);font-size:1.9rem;font-weight:800;color:var(--ink);letter-spacing:-.5px}
+.page-header h1 .gw{background:linear-gradient(135deg,var(--v1),var(--c1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-header p{font-size:.95rem;color:var(--ink3);margin-top:5px;line-height:1.7;font-weight:300}
+/* GLASS CARD */
+.glass-card{background:rgba(255,255,255,.55);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,.88);border-radius:22px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(124,58,237,.08),inset 0 1px 0 rgba(255,255,255,.98)}
+.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,transparent,var(--v2) 25%,var(--c1) 50%,var(--p1) 75%,transparent);background-size:300% 100%;animation:shimLine 4s linear infinite}
+@keyframes shimLine{0%{background-position:300% 0}100%{background-position:-300% 0}}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-family:var(--fh);font-size:.95rem;font-weight:700;color:var(--ink2);display:flex;align-items:center;gap:9px}
+.card-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--v1),var(--p1))}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:18px}
+.stat-card{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.88);border-radius:18px;padding:18px;position:relative;overflow:hidden;transition:.3s;backdrop-filter:blur(20px)}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.s1::after{background:linear-gradient(90deg,var(--v1),var(--c1))}.s2::after{background:linear-gradient(90deg,var(--p1),var(--o1))}.s3::after{background:linear-gradient(90deg,var(--g1),var(--c1))}.s4::after{background:linear-gradient(90deg,var(--c1),var(--v2))}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(124,58,237,.12);background:rgba(255,255,255,.88)}
+.stat-label{font-family:var(--fm);font-size:.58rem;color:var(--ink4);text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:8px}
+.stat-val{font-family:var(--fh);font-size:2.2rem;font-weight:800;line-height:1;color:var(--v1)}
+.stat-icon{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:10px;background:rgba(124,58,237,.08);display:flex;align-items:center;justify-content:center;color:var(--v1);font-size:.8rem}
+.sec-notice{display:flex;gap:14px;align-items:flex-start;padding:16px;background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.1);border-radius:14px}
+.sec-notice-icon{width:36px;height:36px;border-radius:11px;background:rgba(124,58,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--v1);font-size:.88rem}
+.sec-notice-text h4{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sec-notice-text p{font-size:.88rem;color:var(--ink3);line-height:1.7;font-weight:300}
+/* BUTTONS */
+.action-btn{padding:10px 20px;border-radius:50px;font-family:var(--fb);font-size:.88rem;font-weight:600;cursor:pointer;transition:.25s}
+.action-btn.primary{background:linear-gradient(135deg,var(--v1),var(--p1));border:none;color:#fff;box-shadow:0 6px 20px rgba(124,58,237,.3)}
+.action-btn.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,58,237,.4)}
+.action-btn.outline{background:rgba(255,255,255,.65);border:1.5px solid rgba(124,58,237,.14);color:var(--ink3);backdrop-filter:blur(20px)}
+.action-btn.outline:hover:not(:disabled){background:rgba(255,255,255,.95);border-color:rgba(124,58,237,.3);color:var(--v1)}
+.action-btn:disabled{opacity:.4;cursor:not-allowed}
+.action-btn.full{width:100%;text-align:center;border-radius:14px}
+/* MEDIA TABS */
+.media-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.mtab{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:50px;border:1.5px solid rgba(124,58,237,.1);background:rgba(255,255,255,.6);color:var(--ink4);font-size:.85rem;font-weight:600;cursor:pointer;transition:.25s;backdrop-filter:blur(20px)}
+.mtab:hover{border-color:rgba(124,58,237,.25);color:var(--v1)}
+.mtab.active{background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.2);color:var(--v1)}
+.mpanel{display:none;animation:sIn .3s ease both}.mpanel.active{display:block}
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed rgba(124,58,237,.18);border-radius:16px;padding:28px;text-align:center;cursor:pointer;transition:.25s;background:rgba(255,255,255,.42);margin-bottom:12px;position:relative;overflow:hidden}
+.upload-zone:hover{border-color:rgba(124,58,237,.4);background:rgba(124,58,237,.04);box-shadow:0 0 0 4px rgba(124,58,237,.06)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone .uz-icon{font-size:2rem;margin-bottom:10px}
+.upload-zone .uz-title{font-size:.92rem;font-weight:700;color:var(--ink2);margin-bottom:3px}
+.upload-zone .uz-sub{font-size:.78rem;color:var(--ink4);font-weight:300}
+.upload-zone .uz-file{font-size:.82rem;color:var(--v1);font-weight:700;margin-top:7px}
+.msg-area{width:100%;padding:14px;background:rgba(255,255,255,.65);border:1.5px solid rgba(124,58,237,.12);border-radius:14px;color:var(--ink);font-family:var(--fb);font-size:.92rem;resize:vertical;min-height:80px;transition:.25s;outline:none;margin-bottom:12px}
+.msg-area:focus{border-color:rgba(124,58,237,.35);background:rgba(255,255,255,.95);box-shadow:0 0 0 4px rgba(124,58,237,.07)}
+.msg-area::placeholder{color:var(--ink5)}
+/* ENCODE RESULT */
+.encode-result{display:none;margin-top:16px;border:1px solid rgba(124,58,237,.14);border-radius:18px;overflow:hidden;animation:sIn .35s ease both}
+.encode-result.visible{display:block}
+.er-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(124,58,237,.05);border-bottom:1px solid rgba(124,58,237,.1)}
+.er-hi{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--v1),var(--c1));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;flex-shrink:0}
+.er-ht{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--ink)}
+.er-hs{font-size:.75rem;color:var(--ink4);margin-top:1px}
+.er-body{padding:16px 18px}
+.er-filename{display:flex;align-items:center;gap:8px;padding:9px 13px;background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.1);border-radius:10px;margin-bottom:14px}
+.er-fn-ico{color:var(--v1);font-size:.85rem}
+.er-fn-txt{font-size:.82rem;color:var(--ink);font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.er-fn-sz{font-family:var(--fm);font-size:.62rem;color:var(--ink4);background:rgba(124,58,237,.06);padding:2px 8px;border-radius:6px}
+.share-btn-dl{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--v1),var(--p1));color:#fff;font-family:var(--fh);font-size:.9rem;font-weight:700;cursor:pointer;transition:.25s;margin-bottom:10px;text-decoration:none}
+.share-btn-dl:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(124,58,237,.35)}
+.share-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 6px;border-radius:12px;border:1.5px solid rgba(124,58,237,.1);font-family:var(--fb);font-size:.7rem;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;background:rgba(255,255,255,.65);color:var(--ink3)}
+.share-btn:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.25);color:var(--v1)}
+.share-btn .sb-ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.whatsapp .sb-ico{background:rgba(37,211,102,.1);color:#25d366}.gmail .sb-ico{background:rgba(234,67,53,.1);color:#ea4335}.outlook .sb-ico{background:rgba(0,120,212,.1);color:#0078d4}
+/* OUTPUT */
+.output-box{padding:16px;background:rgba(255,255,255,.62);border:1.5px solid rgba(124,58,237,.1);border-radius:14px;margin-top:12px}
+.output-box.has-content{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.04)}
+.ob-label{font-family:var(--fm);font-size:.6rem;color:var(--ink4);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.ob-content{font-size:.9rem;color:var(--ink2);line-height:1.7;word-break:break-word}
+/* PROFILE */
+.profile-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.profile-pic-area{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+.profile-pic-circle{width:72px;height:72px;border-radius:50%;border:2.5px solid rgba(124,58,237,.2);background:rgba(124,58,237,.06);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;overflow:hidden}
+.pic-change-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(255,255,255,.75);border:1.5px solid rgba(124,58,237,.14);border-radius:10px;font-size:.8rem;font-weight:600;color:var(--ink3);cursor:pointer;transition:.25s}
+.pic-change-btn:hover{border-color:rgba(124,58,237,.3);color:var(--v1)}
+.form-field{margin-bottom:14px}
+.form-field label{font-family:var(--fm);font-size:.6rem;color:var(--ink4);text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px}
+.form-field input,.form-field textarea{width:100%;padding:12px 14px;background:rgba(255,255,255,.7);border:1.5px solid rgba(124,58,237,.1);border-radius:12px;color:var(--ink);font-family:var(--fb);font-size:.92rem;outline:none;transition:.3s}
+.form-field input:focus,.form-field textarea:focus{border-color:rgba(124,58,237,.35);background:rgba(255,255,255,.98);box-shadow:0 0 0 4px rgba(124,58,237,.07)}
+.form-field textarea{resize:vertical;min-height:70px;font-weight:300}
+.input-pw-wrap{position:relative}
+.input-pw-wrap input{padding-right:44px}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink5);font-size:.85rem;transition:.2s}
+.pw-eye:hover{color:var(--v1)}
+.strength-segs{display:flex;gap:4px;margin-top:6px}
+.sseg{height:3px;flex:1;border-radius:3px;background:rgba(124,58,237,.1);transition:.4s}
+.slabel{font-family:var(--fm);font-size:.6rem;color:var(--ink5);margin-top:4px;text-align:right}
+.save-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--v1),var(--p1));border:none;border-radius:50px;color:#fff;font-family:var(--fh);font-size:.92rem;font-weight:700;cursor:pointer;transition:.25s;margin-top:6px;box-shadow:0 6px 20px rgba(124,58,237,.28)}
+.save-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,58,237,.4)}
+.save-btn:disabled{opacity:.4;cursor:not-allowed}
+.inline-alert{display:none;align-items:center;gap:9px;padding:10px 14px;border-radius:12px;font-size:.85rem;font-weight:500;margin-bottom:12px}
+.inline-alert.show{display:flex}
+.inline-alert.s{background:rgba(16,185,129,.07);border:1.5px solid rgba(16,185,129,.22);color:#065f46}
+.inline-alert.e{background:rgba(244,63,94,.07);border:1.5px solid rgba(244,63,94,.22);color:#be123c}
+/* HISTORY */
+.hist-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.hist-table th{font-family:var(--fm);font-size:.58rem;color:var(--ink4);text-transform:uppercase;letter-spacing:1.5px;padding:10px 14px;text-align:left;border-bottom:1px solid rgba(124,58,237,.1)}
+.hist-table td{padding:12px 14px;border-bottom:1px solid rgba(124,58,237,.05);color:var(--ink3)}
+.hist-table tr:hover td{background:rgba(124,58,237,.03)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-family:var(--fm);font-size:.62rem;font-weight:500}
+.b-image,.b-img{background:rgba(6,182,212,.08);color:var(--c1);border:1px solid rgba(6,182,212,.15)}
+.b-audio,.b-aud{background:rgba(124,58,237,.08);color:var(--v1);border:1px solid rgba(124,58,237,.15)}
+.b-video,.b-vid{background:rgba(16,185,129,.08);color:var(--g1);border:1px solid rgba(16,185,129,.15)}
+.b-encode{background:rgba(236,72,153,.08);color:var(--p1);border:1px solid rgba(236,72,153,.15)}
+.b-decode{background:rgba(16,185,129,.08);color:var(--g1);border:1px solid rgba(16,185,129,.15)}
+/* TOAST */
+.toast{position:fixed;bottom:72px;right:24px;z-index:9999;padding:13px 20px;border-radius:16px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(10px);transition:.35s;pointer-events:none;backdrop-filter:blur(30px);border:1px solid transparent}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:rgba(255,255,255,.88);border-color:rgba(124,58,237,.25);color:var(--v1);box-shadow:0 8px 30px rgba(124,58,237,.15)}
+.toast.error{background:rgba(255,255,255,.88);border-color:rgba(244,63,94,.25);color:#be123c;box-shadow:0 8px 30px rgba(244,63,94,.15)}
+/* STATUS */
+.sb-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:300;display:flex;align-items:center;gap:14px;padding:8px 22px;background:rgba(255,255,255,.75);backdrop-filter:blur(30px);border:1px solid rgba(124,58,237,.13);border-radius:100px;font-family:var(--fm);font-size:.58rem;color:var(--ink4);letter-spacing:.5px;box-shadow:0 8px 32px rgba(124,58,237,.1)}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--g1);box-shadow:0 0 8px var(--g1);animation:sbp 2s ease-in-out infinite}
+@keyframes sbp{0%,100%{opacity:.5}50%{opacity:1;transform:scale(1.3)}}
+.sb-sep{color:rgba(124,58,237,.22)}
+@media(max-width:900px){.profile-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<button class="theme-btn" onclick="SV_THEME.switch('index')"><i class="fas fa-moon tb-icon"></i> Dark Mode</button>
+<div class="bg-fixed"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="grid-l"></div>
+<canvas id="cvs"></canvas>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-gem">
+        <svg viewBox="0 0 54 54" fill="none"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="50%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <polygon points="27,3 51,16 51,38 27,51 3,38 3,16" fill="url(#lg1)" opacity=".15" filter="url(#glow)"/>
+        <polygon points="27,3 51,16 51,38 27,51 3,38 3,16" fill="none" stroke="url(#lg1)" stroke-width="1.5"/>
+        <polygon points="27,10 44,19 44,35 27,44 10,35 10,19" fill="url(#lg1)" opacity=".22"/>
+        <circle cx="27" cy="27" r="6" fill="url(#lg1)" opacity=".9"/></svg>
+      </div>
+      <div><div class="logo-name">STEGNO<em>VAULT</em></div><div class="logo-sub">Intelligence Suite</div></div>
+    </div>
+    <div class="user-card" onclick="showSection('profile-sec',document.getElementById('nav-prof'))">
+      <div class="ua-wrap"><div class="user-avatar" id="sidebarAvatar">👤</div><div class="av-online"></div></div>
+      <div><div class="user-name" id="sidebarName">Loading...</div><div class="user-role">Operative</div></div>
+    </div>
+    <div class="nav-sec-lbl">Navigation</div>
+    <nav>
+      <a class="nav-link active" id="nav-dash" onclick="showSection('dashboard-sec',this)"><i class="fas fa-chart-pie nav-icon"></i> Dashboard</a>
+      <a class="nav-link" id="nav-prof" onclick="showSection('profile-sec',this)"><i class="fas fa-id-card nav-icon"></i> My Profile</a>
+      <div class="nav-sec-lbl" style="margin-top:12px">Operations</div>
+      <a class="nav-link" id="nav-enc" onclick="showSection('encode-sec',this)"><i class="fas fa-lock nav-icon"></i> Encoding Hub</a>
+      <a class="nav-link" id="nav-dec" onclick="showSection('decode-sec',this)"><i class="fas fa-unlock-keyhole nav-icon"></i> Decoding Hub</a>
+      <a class="nav-link" id="nav-hist" onclick="showSection('history-sec',this)"><i class="fas fa-timeline nav-icon"></i> Activity Log</a>
+    </nav>
+    <div class="sidebar-footer">
+      <form action="/logout" method="POST"><button type="submit" class="logout-btn"><i class="fas fa-power-off"></i> Logout Securely</button></form>
+    </div>
+  </aside>
+
+  <main>
+    <section id="dashboard-sec" class="section-view active">
+      <div class="page-header">
+        <div class="eyebrow"><i class="fas fa-fingerprint"></i> Identity Verified</div>
+        <h1>Welcome back, <span class="gw" id="dashName">Operative</span></h1>
+        <p>Your steganography operations center — secure and ready.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card s1"><span class="stat-label">Total Operations</span><div class="stat-val" id="statTotal">—</div><div class="stat-icon"><i class="fas fa-bolt"></i></div></div>
+        <div class="stat-card s2"><span class="stat-label">Encodes Done</span><div class="stat-val" id="statEncode">—</div><div class="stat-icon"><i class="fas fa-lock"></i></div></div>
+        <div class="stat-card s3"><span class="stat-label">Decodes Done</span><div class="stat-val" id="statDecode">—</div><div class="stat-icon"><i class="fas fa-unlock"></i></div></div>
+        <div class="stat-card s4"><span class="stat-label">Access Level</span><div class="stat-val" style="font-size:1rem;padding-top:6px;color:var(--v1)">Operative</div><div class="stat-icon"><i class="fas fa-shield-halved"></i></div></div>
+      </div>
+      <div class="glass-card">
+        <div class="card-head"><div class="card-title"><span class="card-dot"></span> Security Notice</div></div>
+        <div class="sec-notice"><div class="sec-notice-icon"><i class="fas fa-shield-halved"></i></div><div class="sec-notice-text"><h4>Vault Protection Active</h4><p>Sessions are protected with end-to-end encryption. All steganographic operations are logged. Never share credentials or encoded files with unauthorized parties.</p></div></div>
+      </div>
+      <div class="glass-card">
+        <div class="card-head"><div class="card-title"><span class="card-dot"></span> Quick Actions</div></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="action-btn outline" onclick="showSection('encode-sec',document.getElementById('nav-enc'))"><i class="fas fa-lock" style="margin-right:7px"></i>Encode Now</button>
+          <button class="action-btn outline" onclick="showSection('decode-sec',document.getElementById('nav-dec'))"><i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Decode Now</button>
+          <button class="action-btn outline" onclick="showSection('history-sec',document.getElementById('nav-hist'))"><i class="fas fa-timeline" style="margin-right:7px"></i>View History</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile-sec" class="section-view">
+      <div class="page-header"><div class="eyebrow">Account</div><h1>My Profile</h1></div>
+      <div class="profile-layout">
+        <div class="glass-card">
+          <div class="card-head"><div class="card-title"><span class="card-dot"></span> Personal Info</div></div>
+          <div class="profile-pic-area">
+            <div class="profile-pic-circle" id="profilePicDisplay">👤</div>
+            <div>
+              <div id="profileNameBig" style="font-family:var(--fh);font-size:.98rem;font-weight:700;margin-bottom:3px;color:var(--ink)"></div>
+              <div id="profileEmailBig" style="font-size:.78rem;color:var(--ink4);margin-bottom:9px;font-family:var(--fm)"></div>
+              <label style="cursor:pointer"><input type="file" id="picUploadInput" accept="image/*" style="display:none" onchange="uploadProfilePic()"><div class="pic-change-btn"><i class="fas fa-camera"></i> Change Photo</div></label>
+            </div>
+          </div>
+          <div id="profileAlert" class="inline-alert"></div>
+          <div class="form-field"><label>Full Name</label><input type="text" id="pName" placeholder="Your full name"></div>
+          <div class="form-field"><label>Email Address</label><input type="text" id="pEmail" readonly></div>
+          <div class="form-field"><label>Mobile Number</label><input type="tel" id="pMobile" placeholder="Mobile number"></div>
+          <div class="form-field"><label>Bio</label><textarea id="pBio" placeholder="Short bio..."></textarea></div>
+          <button class="save-btn" id="saveProfileBtn" onclick="saveProfile()">Save Profile</button>
+        </div>
+        <div class="glass-card">
+          <div class="card-head"><div class="card-title"><span class="card-dot"></span> Change Password</div></div>
+          <div id="passAlert" class="inline-alert"></div>
+          <div class="form-field"><label>Current Password</label><div class="input-pw-wrap"><input type="password" id="currentPass" placeholder="Current password"><button class="pw-eye" onclick="togglePw('currentPass',this)"><i class="fas fa-eye"></i></button></div></div>
+          <div class="form-field"><label>New Password</label><div class="input-pw-wrap"><input type="password" id="newPassInput" placeholder="New password" oninput="checkStr(this.value)"><button class="pw-eye" onclick="togglePw('newPassInput',this)"><i class="fas fa-eye"></i></button></div><div class="strength-segs"><div class="sseg" id="ps1"></div><div class="sseg" id="ps2"></div><div class="sseg" id="ps3"></div><div class="sseg" id="ps4"></div></div><div class="slabel" id="passLabel"></div></div>
+          <div class="form-field"><label>Confirm Password</label><div class="input-pw-wrap"><input type="password" id="confPassInput" placeholder="Confirm password"><button class="pw-eye" onclick="togglePw('confPassInput',this)"><i class="fas fa-eye"></i></button></div></div>
+          <button class="save-btn" id="changePassBtn" onclick="changePassword()">Update Password</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="encode-sec" class="section-view">
+      <div class="page-header"><div class="eyebrow">Message Concealment</div><h1>Encoding Hub</h1><p>Embed secret messages into images, audio, and video files.</p></div>
+      <div class="media-tabs">
+        <button class="mtab active" onclick="switchMedia('image','encode',this)"><span>🖼</span> Image</button>
+        <button class="mtab" onclick="switchMedia('audio','encode',this)"><span>🎵</span> Audio</button>
+        <button class="mtab" onclick="switchMedia('video','encode',this)"><span>🎬</span> Video</button>
+      </div>
+      <div class="glass-card">
+        <div id="encode-image-panel" class="mpanel active">
+          <div class="upload-zone" id="encImgZone"><input type="file" id="imageEncodeFile" accept="image/*" onchange="setZoneFile('encImgZone',this)"><div class="uz-icon">🖼</div><div class="uz-title">Upload image to hide your message</div><div class="uz-sub">PNG, JPG, BMP supported</div><div class="uz-file" id="encImgZoneFile"></div></div>
+          <textarea class="msg-area" id="imageMsg" placeholder="Type your secret message here..."></textarea>
+          <button class="action-btn primary full" id="encImgBtn" onclick="encodeImage()"><i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message</button>
+          <div class="encode-result" id="encImgResult"><div class="er-header"><div class="er-hi"><i class="fas fa-check"></i></div><div><div class="er-ht">Encoded Successfully</div><div class="er-hs">Message hidden inside file</div></div></div><div class="er-body"><div class="er-filename"><i class="fas fa-image er-fn-ico"></i><span class="er-fn-txt" id="encImgResultName"></span><span class="er-fn-sz" id="encImgResultSize"></span></div><button class="share-btn-dl" id="encImgDownloadBtn"><i class="fas fa-download"></i> Download Encoded File</button><div class="share-row"><a class="share-btn whatsapp" id="encImgWhatsappBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-whatsapp"></i></div>WhatsApp</a><a class="share-btn gmail" id="encImgGmailBtn" href="#" target="_blank"><div class="sb-ico"><i class="fas fa-envelope"></i></div>Gmail</a><a class="share-btn outlook" id="encImgOutlookBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-microsoft"></i></div>Outlook</a></div></div></div>
+        </div>
+        <div id="encode-audio-panel" class="mpanel">
+          <div class="upload-zone" id="encAudZone"><input type="file" id="audioEncodeFile" accept="audio/*" onchange="setZoneFile('encAudZone',this)"><div class="uz-icon">🎵</div><div class="uz-title">Upload audio to hide your message</div><div class="uz-sub">WAV, MP3 supported</div><div class="uz-file" id="encAudZoneFile"></div></div>
+          <textarea class="msg-area" id="audioMsg" placeholder="Type your secret message here..."></textarea>
+          <button class="action-btn primary full" id="encAudBtn" onclick="encodeAudio()"><i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message</button>
+          <div class="encode-result" id="encAudResult"><div class="er-header"><div class="er-hi"><i class="fas fa-check"></i></div><div><div class="er-ht">Audio Encoded</div><div class="er-hs">Message hidden inside audio</div></div></div><div class="er-body"><div class="er-filename"><i class="fas fa-music er-fn-ico"></i><span class="er-fn-txt" id="encAudResultName"></span><span class="er-fn-sz" id="encAudResultSize"></span></div><button class="share-btn-dl" id="encAudDownloadBtn"><i class="fas fa-download"></i> Download Encoded File</button><div class="share-row"><a class="share-btn whatsapp" id="encAudWhatsappBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-whatsapp"></i></div>WhatsApp</a><a class="share-btn gmail" id="encAudGmailBtn" href="#" target="_blank"><div class="sb-ico"><i class="fas fa-envelope"></i></div>Gmail</a><a class="share-btn outlook" id="encAudOutlookBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-microsoft"></i></div>Outlook</a></div></div></div>
+        </div>
+        <div id="encode-video-panel" class="mpanel">
+          <div class="upload-zone" id="encVidZone"><input type="file" id="videoEncodeFile" accept="video/*" onchange="setZoneFile('encVidZone',this)"><div class="uz-icon">🎬</div><div class="uz-title">Upload video to hide your message</div><div class="uz-sub">MP4, AVI supported</div><div class="uz-file" id="encVidZoneFile"></div></div>
+          <textarea class="msg-area" id="videoMsg" placeholder="Type your secret message here..."></textarea>
+          <button class="action-btn primary full" id="encVidBtn" onclick="encodeVideo()"><i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message</button>
+          <div class="encode-result" id="encVidResult"><div class="er-header"><div class="er-hi"><i class="fas fa-check"></i></div><div><div class="er-ht">Video Encoded</div><div class="er-hs">Message hidden inside video</div></div></div><div class="er-body"><div class="er-filename"><i class="fas fa-video er-fn-ico"></i><span class="er-fn-txt" id="encVidResultName"></span><span class="er-fn-sz" id="encVidResultSize"></span></div><button class="share-btn-dl" id="encVidDownloadBtn"><i class="fas fa-download"></i> Download Encoded File</button><div class="share-row"><a class="share-btn whatsapp" id="encVidWhatsappBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-whatsapp"></i></div>WhatsApp</a><a class="share-btn gmail" id="encVidGmailBtn" href="#" target="_blank"><div class="sb-ico"><i class="fas fa-envelope"></i></div>Gmail</a><a class="share-btn outlook" id="encVidOutlookBtn" href="#" target="_blank"><div class="sb-ico"><i class="fab fa-microsoft"></i></div>Outlook</a></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="decode-sec" class="section-view">
+      <div class="page-header"><div class="eyebrow">Data Extraction</div><h1>Decoding Hub</h1><p>Extract hidden messages from previously encoded media files.</p></div>
+      <div class="media-tabs">
+        <button class="mtab active" onclick="switchMedia('image','decode',this)"><span>🖼</span> Image</button>
+        <button class="mtab" onclick="switchMedia('audio','decode',this)"><span>🎵</span> Audio</button>
+        <button class="mtab" onclick="switchMedia('video','decode',this)"><span>🎬</span> Video</button>
+      </div>
+      <div class="glass-card">
+        <div id="decode-image-panel" class="mpanel active"><div class="upload-zone" id="decImgZone"><input type="file" id="imageDecodeFile" accept="image/png" onchange="setZoneFile('decImgZone',this)"><div class="uz-icon">🔍</div><div class="uz-title">Upload encoded image to extract message</div><div class="uz-sub">⚠ Encoded PNG files only</div><div class="uz-file" id="decImgZoneFile"></div></div><button class="action-btn outline full" id="decImgBtn" onclick="decodeImage()"><i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message</button><div class="output-box" id="imageOutput"><div class="ob-label">Extracted Message</div><div class="ob-content">Upload an encoded image and click extract.</div></div></div>
+        <div id="decode-audio-panel" class="mpanel"><div class="upload-zone" id="decAudZone"><input type="file" id="audioDecodeFile" accept="audio/*" onchange="setZoneFile('decAudZone',this)"><div class="uz-icon">🔍</div><div class="uz-title">Upload encoded audio to extract message</div><div class="uz-sub">⚠ Encoded WAV files only</div><div class="uz-file" id="decAudZoneFile"></div></div><button class="action-btn outline full" id="decAudBtn" onclick="decodeAudio()"><i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message</button><div class="output-box" id="audioOutput"><div class="ob-label">Extracted Message</div><div class="ob-content">Upload an encoded audio and click extract.</div></div></div>
+        <div id="decode-video-panel" class="mpanel"><div class="upload-zone" id="decVidZone"><input type="file" id="videoDecodeFile" accept="video/*" onchange="setZoneFile('decVidZone',this)"><div class="uz-icon">🔍</div><div class="uz-title">Upload encoded video to extract message</div><div class="uz-sub">⚠ Encoded MP4 files only</div><div class="uz-file" id="decVidZoneFile"></div></div><button class="action-btn outline full" id="decVidBtn" onclick="decodeVideo()"><i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message</button><div class="output-box" id="videoOutput"><div class="ob-label">Extracted Message</div><div class="ob-content">Upload an encoded video and click extract.</div></div></div>
+      </div>
+    </section>
+
+    <section id="history-sec" class="section-view">
+      <div class="page-header"><div class="eyebrow">Audit Trail</div><h1>Activity Log</h1><p>Full record of your encoding and decoding operations.</p></div>
+      <div class="glass-card">
+        <div class="card-head"><div class="card-title"><span class="card-dot"></span> Operations History</div></div>
+        <div style="overflow-x:auto"><table class="hist-table"><thead><tr><th>Type</th><th>Action</th><th>File</th><th>Timestamp</th></tr></thead><tbody id="histRows"><tr><td colspan="4" style="text-align:center;color:var(--ink4);padding:36px;font-family:var(--fm);font-size:.8rem">Loading activity...</td></tr></tbody></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<div class="sb-bar"><div class="sb-dot"></div><span>SECURE SESSION</span><span class="sb-sep">·</span><span>TLS 1.3</span><span class="sb-sep">·</span><span>AES-256-GCM</span><span class="sb-sep">·</span><span id="clk"></span></div>
+
+<script>
+(function(){var T='light';document.documentElement.setAttribute('data-theme',T);localStorage.setItem('sv_theme',T);var P={dark:{login:'login.html',register:'register.html',forgot:'forgot-password.html',index:'index.html',admin:'admin.html','403':'403.html'},light:{login:'login-light.html',register:'register-light.html',forgot:'forgot-password-light.html',index:'index-light.html',admin:'admin-light.html','403':'403-light.html'}};window.SV_THEME={get:()=>T,set:t=>localStorage.setItem('sv_theme',t),switch:function(k){var n=T==='dark'?'light':'dark';this.set(n);var t=P[n][k];if(t)window.location.href='/'+t;else window.location.reload();}};})();
+
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+setInterval(()=>{cx+=(mx-cx)*.13;cy+=(my-cy)*.13;cur2.style.left=cx+'px';cur2.style.top=cy+'px';},16);
+document.querySelectorAll('a,button,input,textarea,.user-card').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';cur.style.background='#ec4899';cur2.style.width='50px';cur2.style.height='50px';});el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='#7c3aed';cur2.style.width='36px';cur2.style.height='36px';});});
+
+(function(){const c=document.getElementById('cvs'),x=c.getContext('2d');let W,H,P=[],mouse={x:-999,y:-999};const COLS=[[124,58,237],[168,85,247],[6,182,212],[236,72,153],[16,185,129],[245,158,11]];function mk(){const a=Math.random()*Math.PI*2,sp=Math.random()*.35+.07;return{x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:Math.random()*2+.4,o:Math.random()*.45+.12,col:COLS[Math.floor(Math.random()*COLS.length)],pulse:Math.random()*Math.PI*2,pspd:Math.random()*.025+.006,trail:[]};}function init(){W=c.width=innerWidth;H=c.height=innerHeight;P=Array.from({length:90},mk);}init();addEventListener('resize',init);addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});function draw(){x.clearRect(0,0,W,H);P.forEach(p=>{const dx=p.x-mouse.x,dy=p.y-mouse.y,dist=Math.hypot(dx,dy);if(dist<110){const f=(110-dist)/110;p.vx+=dx/dist*f*.38;p.vy+=dy/dist*f*.38;}const sp=Math.hypot(p.vx,p.vy);if(sp>1.5){p.vx=p.vx/sp*1.5;p.vy=p.vy/sp*1.5;}p.vx*=.996;p.vy*=.996;p.x+=p.vx;p.y+=p.vy;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;p.trail.push({x:p.x,y:p.y});if(p.trail.length>10)p.trail.shift();p.pulse+=p.pspd;const o=p.o*(0.65+0.35*Math.sin(p.pulse));const[r,g,b]=p.col;if(p.trail.length>2){x.beginPath();x.moveTo(p.trail[0].x,p.trail[0].y);p.trail.forEach(t=>x.lineTo(t.x,t.y));x.strokeStyle=`rgba(${r},${g},${b},${o*.22})`;x.lineWidth=p.r*.55;x.stroke();}const grd=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);grd.addColorStop(0,`rgba(${r},${g},${b},${o})`);grd.addColorStop(1,`rgba(${r},${g},${b},0)`);x.beginPath();x.arc(p.x,p.y,p.r*3,0,Math.PI*2);x.fillStyle=grd;x.fill();});requestAnimationFrame(draw);}draw();})();
+
+const clk=document.getElementById('clk');setInterval(()=>clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false}),1000);clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false});
+function showSection(id,el){document.querySelectorAll('.section-view').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(a=>a.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');if(id==='profile-sec')loadProfile();if(id==='history-sec')loadHistory();if(id==='dashboard-sec')loadDashStats();}
+function switchMedia(type,mode,btn){document.querySelectorAll(`#${mode}-sec .mpanel`).forEach(p=>p.classList.remove('active'));document.querySelectorAll(`#${mode}-sec .mtab`).forEach(b=>b.classList.remove('active'));document.getElementById(mode+'-'+type+'-panel').classList.add('active');btn.classList.add('active');}
+function setZoneFile(zoneId,input){const file=input.files[0];const label=document.getElementById(zoneId+'File');if(label&&file)label.textContent=file.name;}
+function toast(msg,type='success'){const el=document.getElementById('toast');el.className='toast '+type;el.innerHTML=`<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+function fmtDate(v){if(!v)return'—';try{if(Array.isArray(v)){const[yr,mo,dy,hr,mn,sc]=v;return new Date(yr,mo-1,dy,hr,mn,sc||0).toLocaleString();}return new Date(v).toLocaleString();}catch{return String(v);}}
+function checkStr(v){const segs=['ps1','ps2','ps3','ps4'].map(id=>document.getElementById(id));const label=document.getElementById('passLabel');let s=0;if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v)&&/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;const C=['#ef4444','#f97316','#fbbf24','#4ade80'],L=['Weak','Fair','Good','Strong'];segs.forEach((seg,i)=>seg.style.background=i<s?C[s-1]:'rgba(124,58,237,.1)');label.textContent=v.length?(L[s-1]||''):'';}
+function togglePw(inputId,btn){const inp=document.getElementById(inputId);const icon=btn.querySelector('i');if(inp.type==='password'){inp.type='text';icon.className='fas fa-eye-slash';}else{inp.type='password';icon.className='fas fa-eye';}}
+function showAlert(id,msg,type){const el=document.getElementById(id);el.className='inline-alert show '+(type==='success'?'s':'e');el.innerHTML=`<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;setTimeout(()=>el.classList.remove('show'),4000);}
+function triggerDownload(url,filename){const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);}
+async function loadCurrentUser(){try{const res=await fetch('/api/current-user');if(res.status===401||res.redirected){window.location.href='/login-light.html';return;}if(!res.ok)throw new Error();const name=await res.text();document.getElementById('sidebarName').textContent=name;document.getElementById('dashName').textContent=name.split(' ')[0]||'Operative';loadDashStats();}catch{window.location.href='/login-light.html';}}
+async function loadDashStats(){try{const res=await fetch('/api/my-history');if(res.status===401||res.redirected){window.location.href='/login-light.html';return;}if(!res.ok)throw new Error();const text=await res.text();if(!text||text.trim()===''){['statTotal','statEncode','statDecode'].forEach(id=>document.getElementById(id).textContent='0');return;}const arr=JSON.parse(text);document.getElementById('statTotal').textContent=arr.length;document.getElementById('statEncode').textContent=arr.filter(h=>h.actionType==='ENCODE').length;document.getElementById('statDecode').textContent=arr.filter(h=>h.actionType==='DECODE').length;}catch{['statTotal','statEncode','statDecode'].forEach(id=>document.getElementById(id).textContent='0');}}
+async function loadHistory(){const tbody=document.getElementById('histRows');try{const res=await fetch('/api/my-history');if(!res.ok)throw new Error();const text=await res.text();if(!text||text.trim()===''){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink4);padding:36px;font-family:var(--fm);font-size:.8rem">No operations yet.</td></tr>';return;}const arr=JSON.parse(text);if(!Array.isArray(arr)||!arr.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--ink4);padding:36px;font-family:var(--fm);font-size:.8rem">No operations yet.</td></tr>';return;}tbody.innerHTML=arr.slice().reverse().map(h=>`<tr><td><span class="badge b-${(h.fileType||'').toLowerCase()}">${h.fileType||'—'}</span></td><td><span class="badge b-${(h.actionType||'').toLowerCase()}">${h.actionType||'—'}</span></td><td style="font-size:.85rem;color:var(--ink3)">${h.fileName||'—'}</td><td style="font-family:var(--fm);font-size:.72rem;color:var(--ink4)">${fmtDate(h.uploadTime)}</td></tr>`).join('');}catch{tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#be123c;padding:20px">Error loading activity.</td></tr>';}}
+async function loadProfile(){try{const res=await fetch('/api/profile');if(!res.ok)return;const u=await res.json();document.getElementById('pName').value=u.name||'';document.getElementById('pEmail').value=u.email||'';document.getElementById('pMobile').value=u.mobile||'';document.getElementById('pBio').value=u.bio||'';document.getElementById('profileNameBig').textContent=u.name||'';document.getElementById('profileEmailBig').textContent=u.email||'';if(u.profilePicUrl){document.getElementById('profilePicDisplay').innerHTML=`<img src="${u.profilePicUrl}" style="width:100%;height:100%;object-fit:cover">`;document.getElementById('sidebarAvatar').innerHTML=`<img src="${u.profilePicUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;}}catch{}}
+async function saveProfile(){const btn=document.getElementById('saveProfileBtn');btn.disabled=true;try{const res=await fetch('/api/profile/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('pName').value,mobileNo:document.getElementById('pMobile').value,bio:document.getElementById('pBio').value})});if(!res.ok)throw new Error();showAlert('profileAlert','Profile updated!','success');toast('Profile saved');}catch{showAlert('profileAlert','Failed to update profile.','error');}finally{btn.disabled=false;}}
+async function changePassword(){const btn=document.getElementById('changePassBtn');const c=document.getElementById('currentPass').value,nw=document.getElementById('newPassInput').value,cf=document.getElementById('confPassInput').value;if(!c||!nw||!cf){showAlert('passAlert','All fields required.','error');return;}if(nw!==cf){showAlert('passAlert','Passwords do not match.','error');return;}if(nw.length<6){showAlert('passAlert','Min 6 characters.','error');return;}btn.disabled=true;try{const res=await fetch('/api/profile/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:c,newPassword:nw})});const data=await res.json();if(!res.ok)throw new Error(data.message||'Failed');showAlert('passAlert','Password changed!','success');toast('Password updated');}catch(e){showAlert('passAlert',e.message||'Failed.','error');}finally{btn.disabled=false;}}
+async function uploadProfilePic(){const file=document.getElementById('picUploadInput').files[0];if(!file)return;const fd=new FormData();fd.append('file',file);try{const res=await fetch('/api/profile/upload-pic',{method:'POST',body:fd});const data=await res.json();if(!res.ok)throw new Error(data.message);document.getElementById('profilePicDisplay').innerHTML=`<img src="${data.data}" style="width:100%;height:100%;object-fit:cover">`;document.getElementById('sidebarAvatar').innerHTML=`<img src="${data.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;toast('Photo updated!');}catch(e){toast(e.message||'Upload failed','error');}}
+function mkShareLinks(type){const wa='https://wa.me/?text=I+sent+you+a+steganography-encoded+file.';const gm='https://mail.google.com/mail/?view=cm&su=Encoded+File';const ol='https://outlook.live.com/mail/0/deeplink/compose?subject=Encoded+File';document.getElementById(`enc${type}WhatsappBtn`).href=wa;document.getElementById(`enc${type}GmailBtn`).href=gm;document.getElementById(`enc${type}OutlookBtn`).href=ol;}
+async function encodeImage(){const file=document.getElementById('imageEncodeFile').files[0],msg=document.getElementById('imageMsg').value.trim(),btn=document.getElementById('encImgBtn'),rb=document.getElementById('encImgResult');if(!file){toast('Select an image file','error');return;}if(!msg){toast('Enter a secret message','error');return;}btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Encoding...';rb.classList.remove('visible');const fd=new FormData();fd.append('file',file);fd.append('message',msg);try{const res=await fetch('/api/image/encode',{method:'POST',body:fd});if(!res.ok)throw new Error();const blob=await res.blob(),url=URL.createObjectURL(blob),fname='encoded-'+file.name.replace(/\.[^.]+$/,'')+'.png';document.getElementById('encImgResultName').textContent=fname;document.getElementById('encImgResultSize').textContent=(blob.size/1024).toFixed(1)+' KB';document.getElementById('encImgDownloadBtn').onclick=()=>triggerDownload(url,fname);mkShareLinks('Img');rb.classList.add('visible');toast('Image encoded!');}catch{toast('Encoding failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message';}}
+async function encodeAudio(){const file=document.getElementById('audioEncodeFile').files[0],msg=document.getElementById('audioMsg').value.trim(),btn=document.getElementById('encAudBtn'),rb=document.getElementById('encAudResult');if(!file){toast('Select an audio file','error');return;}if(!msg){toast('Enter a secret message','error');return;}btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Encoding...';rb.classList.remove('visible');const fd=new FormData();fd.append('file',file);fd.append('message',msg);try{const res=await fetch('/api/audio/encode',{method:'POST',body:fd});if(!res.ok)throw new Error();const blob=await res.blob(),url=URL.createObjectURL(blob),fname='encoded-'+file.name.replace(/\.[^.]+$/,'')+'.wav';document.getElementById('encAudResultName').textContent=fname;document.getElementById('encAudResultSize').textContent=(blob.size/1024).toFixed(1)+' KB';document.getElementById('encAudDownloadBtn').onclick=()=>triggerDownload(url,fname);mkShareLinks('Aud');rb.classList.add('visible');toast('Audio encoded!');}catch{toast('Encoding failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message';}}
+async function encodeVideo(){const file=document.getElementById('videoEncodeFile').files[0],msg=document.getElementById('videoMsg').value.trim(),btn=document.getElementById('encVidBtn'),rb=document.getElementById('encVidResult');if(!file){toast('Select a video file','error');return;}if(!msg){toast('Enter a secret message','error');return;}btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Encoding...';rb.classList.remove('visible');const fd=new FormData();fd.append('file',file);fd.append('message',msg);try{const res=await fetch('/api/video/encode',{method:'POST',body:fd});if(!res.ok)throw new Error();const blob=await res.blob(),url=URL.createObjectURL(blob),fname='encoded-'+file.name.replace(/\.[^.]+$/,'')+'.mp4';document.getElementById('encVidResultName').textContent=fname;document.getElementById('encVidResultSize').textContent=(blob.size/1024).toFixed(1)+' KB';document.getElementById('encVidDownloadBtn').onclick=()=>triggerDownload(url,fname);mkShareLinks('Vid');rb.classList.add('visible');toast('Video encoded!');}catch{toast('Encoding failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-lock" style="margin-right:7px"></i>Conceal Message';}}
+async function decodeImage(){const file=document.getElementById('imageDecodeFile').files[0],out=document.getElementById('imageOutput');if(!file){toast('Select an encoded image','error');return;}const btn=document.getElementById('decImgBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Extracting...';const fd=new FormData();fd.append('file',file);try{const res=await fetch('/api/image/decode',{method:'POST',body:fd});if(!res.ok)throw new Error();const txt=await res.text();out.classList.add('has-content');out.querySelector('.ob-content').textContent=txt;toast('Message extracted!');}catch{out.querySelector('.ob-content').textContent='Failed to extract.';toast('Decode failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message';}}
+async function decodeAudio(){const file=document.getElementById('audioDecodeFile').files[0],out=document.getElementById('audioOutput');if(!file){toast('Select an encoded audio','error');return;}const btn=document.getElementById('decAudBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Extracting...';const fd=new FormData();fd.append('file',file);try{const res=await fetch('/api/audio/decode',{method:'POST',body:fd});if(!res.ok)throw new Error();const txt=await res.text();out.classList.add('has-content');out.querySelector('.ob-content').textContent=txt;toast('Message extracted!');}catch{out.querySelector('.ob-content').textContent='Failed to extract.';toast('Decode failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message';}}
+async function decodeVideo(){const file=document.getElementById('videoDecodeFile').files[0],out=document.getElementById('videoOutput');if(!file){toast('Select an encoded video','error');return;}const btn=document.getElementById('decVidBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Extracting...';const fd=new FormData();fd.append('file',file);try{const res=await fetch('/api/video/decode',{method:'POST',body:fd});if(!res.ok)throw new Error();const txt=await res.text();out.classList.add('has-content');out.querySelector('.ob-content').textContent=txt;toast('Message extracted!');}catch{out.querySelector('.ob-content').textContent='Failed to extract.';toast('Decode failed','error');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-unlock-keyhole" style="margin-right:7px"></i>Extract Hidden Message';}}
+window.addEventListener('DOMContentLoaded',loadCurrentUser);
+</script>
+</body>
+</html>

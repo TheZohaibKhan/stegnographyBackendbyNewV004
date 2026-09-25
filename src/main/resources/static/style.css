@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --accent-cyan: #2df3ff;
+    --bg-dark: #06161e;
+    --glass: rgba(255, 255, 255, 0.08);
+    --text-sec: #b5d2d9;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: url("https://images.openai.com/static-rsc-3/0LP1BhdSqBy5DacKRFsz7DjgR4XCtWfbHTHsOD6ebB44IXlWk5mvbGY52MfYqLNEmfKmvu53jMULZb5CJ-DWzqIOj7u3sel4-ry6P9vxpk4?purpose=fullsize") no-repeat center / cover fixed;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.bg-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 22, 30, 0.92);
+    z-index: 0;
+}
+
+.app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Header Adjustments */
+.header {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    letter-spacing: 2px;
+}
+
+.header span { color: var(--accent-cyan); }
+
+/* Responsive Tabs */
+.tabs {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on very small screens */
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tabs button, .logout-btn {
+    flex: 1; /* Buttons grow to fill space on mobile */
+    min-width: 100px;
+    max-width: 150px;
+    background: #1f3c46;
+    border: none;
+    color: #cdeef2;
+    padding: 12px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.3s ease;
+}
+
+.tabs button.active-btn {
+    background: var(--accent-cyan);
+    color: #02242a;
+    box-shadow: 0 0 15px rgba(45, 243, 255, 0.3);
+}
+
+.logout-btn {
+    background: rgba(255, 80, 80, 0.1) !important;
+    border: 1px solid rgba(255, 80, 80, 0.3) !important;
+    color: #ff8080 !important;
+}
+
+/* Tab Content Visibility */
+.tab { display: none; transition: opacity 0.3s; }
+.tab.active { display: block; animation: fadeIn 0.4s; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Cards */
+.card {
+    background: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: clamp(15px, 4vw, 30px);
+    margin-bottom: 25px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+input, textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+input[type="file"] {
+    padding: 10px;
+    font-size: 0.85rem;
+}
+
+button.action-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    background: var(--accent-cyan);
+    color: #02242a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button.outline {
+    background: transparent;
+    border: 2px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Mobile Optimizations */
+@media (max-width: 600px) {
+    .tabs {
+        gap: 8px;
+    }
+    .tabs button {
+        font-size: 0.8rem;
+        padding: 10px 5px;
+    }
+    .app-container {
+        padding: 15px;
+    }
+}

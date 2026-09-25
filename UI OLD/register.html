@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegnoVault · Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#03020d;--v1:#7c3aed;--fu:#c026d3;--cy:#06b6d4;--pk:#f472b6;--glass:rgba(10,8,28,.8);--gb:rgba(255,255,255,.09);--t1:#f0eeff;--t2:#9b98c0;--t3:#4a4768;--ok:#10b981;--err:#f43f5e}
+body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;padding:30px 20px 72px;overflow-x:hidden;cursor:none}
+#cur{position:fixed;width:10px;height:10px;border-radius:50%;background:rgba(124,58,237,.9);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur2{position:fixed;width:32px;height:32px;border-radius:50%;border:1px solid rgba(124,58,237,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s}
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nb{position:fixed;z-index:1;pointer-events:none;border-radius:50%;filter:blur(110px);animation:nd ease-in-out infinite}
+@keyframes nd{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(38px,-28px) scale(1.07)}66%{transform:translate(-26px,18px) scale(.94)}}
+.nb1{width:750px;height:650px;top:-200px;left:-180px;background:radial-gradient(ellipse,rgba(139,92,246,.24) 0%,transparent 65%);animation-duration:22s}
+.nb2{width:620px;height:520px;bottom:-150px;right:-130px;background:radial-gradient(ellipse,rgba(217,70,239,.2) 0%,transparent 65%);animation-duration:18s;animation-delay:-8s}
+.nb3{width:400px;height:400px;top:35%;right:5%;background:radial-gradient(ellipse,rgba(34,211,238,.1) 0%,transparent 65%);animation-duration:28s;animation-delay:-15s}
+
+.wrap{width:100%;max-width:560px;position:relative;z-index:10;animation:up .85s cubic-bezier(.22,1,.36,1) both}
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* BRAND */
+.top-brand{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px}
+.bn{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:2px}
+.bn b{background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* STEPPER */
+.stepper{display:flex;margin-bottom:26px}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:calc(50% + 19px);top:18px;right:calc(-50% + 19px);height:1px;background:rgba(255,255,255,.07);transition:.5s;z-index:0}
+.step.done:not(:last-child)::after{background:linear-gradient(90deg,rgba(124,58,237,.8),rgba(192,38,211,.4))}
+.step.active:not(:last-child)::after{background:linear-gradient(90deg,rgba(124,58,237,.5),rgba(255,255,255,.06))}
+.sball{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--t3);z-index:1;position:relative;transition:.45s}
+.step.active .sball{border-color:var(--v1);color:#c4b5fd;background:rgba(124,58,237,.15);box-shadow:0 0 0 4px rgba(124,58,237,.1),0 0 24px rgba(124,58,237,.35)}
+.step.done .sball{border-color:var(--fu);background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;font-size:15px;box-shadow:0 0 24px rgba(192,38,211,.45)}
+.slbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);transition:.3s}
+.step.active .slbl{color:#c4b5fd}
+.step.done .slbl{color:rgba(192,38,211,.7)}
+
+/* CARD */
+.gc{background:var(--glass);backdrop-filter:blur(48px) saturate(200%);-webkit-backdrop-filter:blur(48px);border:1px solid var(--gb);border-radius:28px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1),0 0 80px rgba(124,58,237,.05)}
+.gc-top{height:2px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.9),rgba(192,38,211,1),rgba(34,211,238,.9),transparent);animation:sh 5s ease-in-out infinite}
+@keyframes sh{0%,100%{opacity:.4}50%{opacity:1}}
+.gc-body{padding:38px 42px}
+
+/* PANELS */
+.panel{display:none;animation:pin .4s cubic-bezier(.22,1,.36,1)}
+.panel.on{display:block}
+@keyframes pin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.pt{margin-bottom:28px}
+.pt .kk{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c4b5fd;margin-bottom:11px;display:flex;align-items:center;gap:9px;opacity:.9}
+.pt .kk::before{content:'';width:18px;height:1px;background:linear-gradient(90deg,#c4b5fd,transparent)}
+.pt h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:5px}
+.pt p{font-size:14px;color:var(--t2);line-height:1.65}
+
+/* ALERT */
+.al{display:none;align-items:center;gap:11px;padding:13px 17px;border-radius:14px;font-size:13px;font-weight:500;margin-bottom:22px}
+.al-e{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);color:#fda4af}
+
+/* FIELDS */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fi{margin-bottom:18px}
+.fi-lb{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--t2);margin-bottom:9px}
+.fi-lb::before{content:'';width:11px;height:1px;background:linear-gradient(90deg,#c4b5fd,transparent)}
+.fw{position:relative}
+.fw .ico{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--t3);pointer-events:none;z-index:2;transition:.3s}
+.fw input{width:100%;padding:13px 44px 13px 42px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;color:var(--t1);font-size:14.5px;font-family:'Inter',sans-serif;font-weight:400;outline:none;transition:.3s}
+.fw input::placeholder{color:rgba(255,255,255,.17)}
+.fw input:focus{border-color:rgba(124,58,237,.65);background:rgba(124,58,237,.08);box-shadow:0 0 0 4px rgba(124,58,237,.12)}
+.fw:has(input:focus) .ico{color:#c4b5fd}
+.fl{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,#7c3aed,#c026d3,#06b6d4);border-radius:13px;transition:.4s}
+.fw input:focus~.fl{width:72%}
+.eybtn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);font-size:13px;z-index:2;padding:5px;transition:.25s}
+.eybtn:hover{color:#c4b5fd}
+.strbar{height:2.5px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:7px;overflow:hidden}
+.strfill{height:100%;width:0;border-radius:3px;transition:.4s}
+.strtxt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:4px;text-align:right;letter-spacing:.5px}
+
+/* OTP */
+.otp-wrap{background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(192,38,211,.05));border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:26px;margin-bottom:22px;text-align:center}
+.otp-wrap p{font-size:14px;color:var(--t2);margin-bottom:20px;line-height:1.7}
+.otp-wrap strong{color:#c4b5fd}
+.otp-digits{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.otp-digits input{width:56px;height:64px;text-align:center;font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;color:#c4b5fd;outline:none;transition:.35s;caret-color:#c4b5fd}
+.otp-digits input:focus{border-color:rgba(124,58,237,.7);background:rgba(124,58,237,.14);box-shadow:0 0 0 4px rgba(124,58,237,.15),0 0 28px rgba(124,58,237,.12);transform:scale(1.07)}
+.otp-digits input.filled{border-color:rgba(192,38,211,.5);background:rgba(192,38,211,.08)}
+.otp-timer{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);letter-spacing:.5px}
+.otp-timer span{color:#c4b5fd}
+
+/* BUTTONS */
+.btn-p{width:100%;padding:15px;background:linear-gradient(135deg,#7c3aed,#4338ca 45%,#c026d3);border:none;border-radius:14px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer;position:relative;overflow:hidden;transition:.35s;margin-bottom:10px}
+.btn-ov{position:absolute;inset:0;background:linear-gradient(135deg,#c026d3,#7c3aed,#06b6d4 160%);opacity:0;transition:.45s}
+.btn-p:hover .btn-ov{opacity:1}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 18px 50px rgba(124,58,237,.45)}
+.btn-p span{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-p:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn-g{width:100%;padding:13px;background:transparent;border:1px solid rgba(255,255,255,.09);border-radius:14px;color:var(--t2);font-family:'Inter',sans-serif;font-size:14.5px;font-weight:500;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;gap:9px}
+.btn-g:hover{border-color:rgba(124,58,237,.4);color:var(--t1);background:rgba(124,58,237,.06)}
+
+/* SUCCESS */
+.sv{text-align:center;padding:20px 0 10px}
+.sv-orb{width:92px;height:92px;margin:0 auto 24px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#c026d3);display:flex;align-items:center;justify-content:center;font-size:40px;animation:pop .7s cubic-bezier(.22,1,.36,1);box-shadow:0 0 55px rgba(124,58,237,.55),0 0 110px rgba(192,38,211,.2)}
+@keyframes pop{from{transform:scale(.05) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+.sv-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.4px;margin-bottom:12px;background:linear-gradient(135deg,#c4b5fd,#e879f9,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sv-desc{font-size:14px;color:var(--t2);margin-bottom:28px;line-height:1.8}
+
+.signin-row{text-align:center;margin-top:20px;font-size:13.5px;color:var(--t3)}
+.signin-row a{color:#c4b5fd;text-decoration:none;font-weight:600;transition:.25s}
+.signin-row a:hover{color:#e879f9}
+
+.sb{position:fixed;bottom:0;left:0;right:0;z-index:300;padding:8px 34px;background:rgba(3,2,13,.93);backdrop-filter:blur(28px);border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:.6px}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:dp 2.5s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:.5}50%{opacity:1;box-shadow:0 0 18px var(--ok),0 0 32px rgba(16,185,129,.35)}}
+.sb-x{color:rgba(255,255,255,.07)}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<canvas id="cvs"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
+
+<div class="wrap">
+  <div class="top-brand">
+    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#c026d3"/></linearGradient></defs>
+      <polygon points="24,2 44,14 44,34 24,46 4,34 4,14" fill="rgba(124,58,237,.1)" stroke="url(#g1)" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="7" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="3" fill="url(#g1)"/>
+    </svg>
+    <div class="bn">STEGNO<b>VAULT</b></div>
+  </div>
+
+  <div class="stepper">
+    <div class="step active" id="st1"><div class="sball" id="sb1">01</div><div class="slbl">Details</div></div>
+    <div class="step" id="st2"><div class="sball" id="sb2">02</div><div class="slbl">Verify</div></div>
+    <div class="step" id="st3"><div class="sball" id="sb3">03</div><div class="slbl">Done</div></div>
+  </div>
+
+  <div class="gc">
+    <div class="gc-top"></div>
+    <div class="gc-body">
+      <div id="ae" class="al al-e"><i class="fas fa-triangle-exclamation"></i><span id="am"></span></div>
+
+      <!-- P1 -->
+      <div class="panel on" id="p1">
+        <div class="pt"><div class="kk"><i class="fas fa-user-astronaut"></i> New Identity</div><h2>Create your vault</h2><p>Fill in your details to get started</p></div>
+        <form id="rf" onsubmit="return false">
+          <div class="fi"><div class="fi-lb">Email Address</div><div class="fw"><i class="fas fa-at ico"></i><input type="email" id="em" name="username" placeholder="you@example.com" required><div class="fl"></div></div></div>
+          <div class="row2">
+            <div class="fi"><div class="fi-lb">Full Name</div><div class="fw"><i class="fas fa-user ico"></i><input type="text" name="name" placeholder="Your name" required><div class="fl"></div></div></div>
+            <div class="fi"><div class="fi-lb">Mobile</div><div class="fw"><i class="fas fa-phone ico"></i><input type="tel" name="mobileNo" placeholder="10 digits" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" required><div class="fl"></div></div></div>
+          </div>
+          <div class="fi">
+            <div class="fi-lb">Password</div>
+            <div class="fw"><i class="fas fa-lock ico"></i><input type="password" id="pw" name="password" placeholder="Min 6 characters" required oninput="chkS(this.value)"><button type="button" class="eybtn" onclick="toggleEye('pw',this)"><i class="fas fa-eye"></i></button><div class="fl"></div></div>
+            <div class="strbar"><div class="strfill" id="sf"></div></div>
+            <div class="strtxt" id="sl"></div>
+          </div>
+        </form>
+        <button class="btn-p" id="otpBtn" onclick="sendOtp()"><div class="btn-ov"></div><span><i class="fas fa-paper-plane"></i> Send Verification Code</span></button>
+        <div class="signin-row">Already have an account? <a href="/login.html">Sign in →</a></div>
+      </div>
+
+      <!-- P2 -->
+      <div class="panel" id="p2">
+        <div class="pt"><div class="kk"><i class="fas fa-shield-check"></i> Verification</div><h2>Check your inbox</h2><p>Enter the 6-digit code sent to your email</p></div>
+        <div class="otp-wrap">
+          <p>Code dispatched to <strong id="emShow"></strong></p>
+          <div class="otp-digits">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+            <input type="text" maxlength="1" class="od" inputmode="numeric">
+          </div>
+          <div class="otp-timer">EXPIRES IN <span id="ot">02:00</span></div>
+        </div>
+        <button class="btn-p" id="verBtn" onclick="verOtp()"><div class="btn-ov"></div><span><i class="fas fa-shield-halved"></i> Verify & Activate</span></button>
+        <button class="btn-g" onclick="goP(1)"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+
+      <!-- P3 -->
+      <div class="panel" id="p3">
+        <div class="sv">
+          <div class="sv-orb">🔐</div>
+          <div class="sv-title">Vault Activated!</div>
+          <p class="sv-desc">Your secure account is live. You can now encode and decode secret messages hidden inside images, audio, and video files.</p>
+          <button class="btn-p" onclick="location='/login.html'"><div class="btn-ov"></div><span><i class="fas fa-arrow-right"></i> Enter Your Vault</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sb">
+  <div class="sb-dot"></div><span>ENCRYPTED REGISTRATION</span><span class="sb-x">·</span>
+  <span id="clk"></span><span class="sb-x">·</span><span>StegnoVault v4</span>
+</div>
+
+<script>
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+setInterval(()=>{cx+=(mx-cx)*.15;cy+=(my-cy)*.15;cur2.style.left=cx+'px';cur2.style.top=cy+'px';},16);
+document.querySelectorAll('a,button,input').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='16px';cur.style.height='16px';cur2.style.width='44px';cur2.style.height='44px';});el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur2.style.width='32px';cur2.style.height='32px';});});
+
+(function(){const c=document.getElementById('cvs'),x=c.getContext('2d');let W,H,S=[],T=[];const rnd=n=>Math.random()*n;function init(){W=c.width=innerWidth;H=c.height=innerHeight;S=Array.from({length:320},()=>({x:rnd(W),y:rnd(H),r:rnd(1.3)+.1,o:rnd(1),d:1,sp:rnd(.004)+.001,pur:Math.random()>.96}));}function shoot(){T.push({x:rnd(W*.65),y:rnd(H*.4),l:rnd(140)+80,s:rnd(9)+5,a:Math.PI/4+(rnd(1)-.5)*.4,t:0,m:rnd(50)+28,c:Math.random()>.5?'139,92,246':'34,211,238'});}init();addEventListener('resize',init);setTimeout(shoot,1600);setInterval(()=>{if(T.length<3)shoot();},3800);function draw(){x.clearRect(0,0,W,H);S.forEach(s=>{s.o+=s.sp*s.d;if(s.o>1){s.o=1;s.d=-1;}if(s.o<.04){s.o=.04;s.d=1;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);if(s.pur){x.fillStyle=`rgba(167,139,250,${s.o})`;x.shadowBlur=12;x.shadowColor='rgba(167,139,250,.9)';}else{x.fillStyle=`rgba(255,255,255,${s.o*.7})`;x.shadowBlur=0;}x.fill();});x.shadowBlur=0;T=T.filter(s=>{s.t++;if(s.t>s.m)return false;const p=s.t/s.m,a=p<.2?p/.2:p>.65?(1-p)/.35:1,ex=s.x+Math.cos(s.a)*s.s*s.t,ey=s.y+Math.sin(s.a)*s.s*s.t,sx=ex-Math.cos(s.a)*s.l*Math.min(p*3,1),sy=ey-Math.sin(s.a)*s.l*Math.min(p*3,1),g=x.createLinearGradient(sx,sy,ex,ey);g.addColorStop(0,`rgba(${s.c},0)`);g.addColorStop(1,`rgba(${s.c},${a*.95})`);x.beginPath();x.moveTo(sx,sy);x.lineTo(ex,ey);x.strokeStyle=g;x.lineWidth=1.8;x.shadowBlur=10;x.shadowColor=`rgba(${s.c},.8)`;x.stroke();x.shadowBlur=0;return true;});requestAnimationFrame(draw);}draw();})();
+
+function toggleEye(id,b){const f=document.getElementById(id);f.type=f.type==='password'?'text':'password';b.querySelector('i').className=f.type==='password'?'fas fa-eye':'fas fa-eye-slash';}
+function chkS(v){let s=0;if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^a-zA-Z0-9]/.test(v))s++;const c=['','#ef4444','#f97316','#eab308','#22c55e'],l=['','Weak','Fair','Good','Strong'];document.getElementById('sf').style.cssText=`width:${[0,25,50,75,100][s]}%;background:${c[s]||''}`;document.getElementById('sl').textContent=l[s]||'';}
+function showErr(m){const b=document.getElementById('ae');document.getElementById('am').textContent=m;b.style.display='flex';setTimeout(()=>b.style.display='none',5e3);}
+
+let fd={},ti=null,sec=120;
+function goP(n){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));document.getElementById('p'+n).classList.add('on');for(let i=1;i<=3;i++){const si=document.getElementById('st'+i),sb=document.getElementById('sb'+i);si.className='step'+(i<n?' done':i===n?' active':'');sb.innerHTML=i<n?'<i class="fas fa-check"></i>':'0'+i;}}
+document.querySelectorAll('.od').forEach((inp,i,all)=>{inp.addEventListener('input',()=>{inp.value=inp.value.replace(/\D/g,'');if(inp.value){inp.classList.add('filled');if(i<5)all[i+1].focus();}else inp.classList.remove('filled');});inp.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!inp.value&&i>0){all[i-1].focus();all[i-1].value='';all[i-1].classList.remove('filled');}});inp.addEventListener('paste',e=>{e.preventDefault();const t=(e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6);[...t].forEach((c,j)=>{if(all[j]){all[j].value=c;all[j].classList.add('filled');}});all[Math.min(t.length,5)]?.focus();});});
+function getOtp(){return[...document.querySelectorAll('.od')].map(i=>i.value).join('');}
+function startTimer(){clearInterval(ti);sec=120;ti=setInterval(()=>{sec--;const m=Math.floor(sec/60),s=sec%60;document.getElementById('ot').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(sec<=0){clearInterval(ti);document.getElementById('ot').textContent='EXPIRED';}},1000);}
+async function sendOtp(){
+  const f=document.getElementById('rf');
+  fd=Object.fromEntries(new FormData(f).entries());
+  if(!fd.username?.includes('@')){showErr('Enter a valid email address.');return;}
+  if(!fd.name?.trim()){showErr('Enter your full name.');return;}
+  if(!fd.mobileNo||fd.mobileNo.length!==10){showErr('Enter a valid 10-digit mobile number.');return;}
+  if(!fd.password||fd.password.length<6){showErr('Password must be at least 6 characters.');return;}
+  const btn=document.getElementById('otpBtn');
+  btn.disabled=true;btn.innerHTML='<div class="btn-ov"></div><span><i class="fas fa-spinner fa-spin"></i> Sending...</span>';
+  try{
+    // POST /send-otp → ApiResponse { success: boolean, message: string }
+    const r=await fetch('/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fd)});
+    const d=await r.json();
+    if(d.success){
+      document.getElementById('emShow').textContent=fd.username;
+      goP(2);startTimer();
+    } else {
+      showErr(d.message||'Failed to send OTP. Please try again.');
+    }
+  }catch(e){showErr('Network error. Is the server running?');}
+  btn.disabled=false;btn.innerHTML='<div class="btn-ov"></div><span><i class="fas fa-paper-plane"></i> Send Verification Code</span>';
+}
+
+async function verOtp(){
+  const otp=getOtp();
+  if(otp.length!==6){showErr('Enter all 6 digits of the code.');return;}
+  const btn=document.getElementById('verBtn');
+  btn.disabled=true;btn.innerHTML='<div class="btn-ov"></div><span><i class="fas fa-spinner fa-spin"></i> Verifying...</span>';
+  try{
+    // POST /verify-otp → ApiResponse { success: boolean, message: string }
+    const r=await fetch('/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...fd,otp})});
+    const d=await r.json();
+    if(d.success){
+      clearInterval(ti);goP(3);
+    } else {
+      showErr(d.message||'Invalid or expired code. Please try again.');
+    }
+  }catch(e){showErr('Network error. Is the server running?');}
+  btn.disabled=false;btn.innerHTML='<div class="btn-ov"></div><span><i class="fas fa-shield-halved"></i> Verify & Activate</span>';
+}
+
+const clk=document.getElementById('clk');setInterval(()=>clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false}),1000);clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false});
+</script>
+</body>
+</html>

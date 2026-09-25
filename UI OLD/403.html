@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegnoVault · Access Denied</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#03020d;--v1:#7c3aed;--fu:#c026d3;--cy:#06b6d4;--t1:#f0eeff;--t2:#9b98c0;--t3:#4a4768;--err:#f43f5e}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center}
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nb{position:fixed;z-index:1;pointer-events:none;border-radius:50%;filter:blur(110px);animation:nd ease-in-out infinite}
+@keyframes nd{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.07)}66%{transform:translate(-28px,20px) scale(.94)}}
+.nb1{width:600px;height:500px;top:-150px;left:-150px;background:radial-gradient(ellipse,rgba(244,63,94,.15) 0%,transparent 65%);animation-duration:22s}
+.nb2{width:500px;height:400px;bottom:-100px;right:-100px;background:radial-gradient(ellipse,rgba(124,58,237,.15) 0%,transparent 65%);animation-duration:18s;animation-delay:-8s}
+
+.wrap{position:relative;z-index:10;text-align:center;padding:40px;max-width:560px}
+
+/* Shield icon */
+.shield{width:100px;height:100px;border-radius:24px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 32px;font-size:42px;color:#fda4af;position:relative;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,.15)}50%{box-shadow:0 0 0 18px rgba(244,63,94,.0)}}
+.shield::before{content:'';position:absolute;inset:-1px;border-radius:25px;background:linear-gradient(135deg,rgba(244,63,94,.3),transparent 60%);pointer-events:none}
+
+/* Code */
+.code{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--err);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+.code::before,.code::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--err))}
+.code::after{background:linear-gradient(90deg,var(--err),transparent)}
+
+/* Heading */
+h1{font-family:'Syne',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:800;letter-spacing:-2px;margin-bottom:10px;background:linear-gradient(135deg,#fda4af,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.sub{font-size:13px;color:var(--t2);margin-bottom:10px;letter-spacing:.3px}
+.msg{font-size:12px;color:var(--t3);margin-bottom:36px;line-height:1.8;max-width:400px;margin-left:auto;margin-right:auto}
+
+/* Terminal block */
+.terminal{background:rgba(0,0,0,.5);border:1px solid rgba(244,63,94,.2);border-radius:14px;padding:18px 22px;margin-bottom:36px;text-align:left}
+.t-bar{display:flex;gap:7px;margin-bottom:14px}
+.t-dot{width:10px;height:10px;border-radius:50%}
+.t-dot:nth-child(1){background:#f43f5e}.t-dot:nth-child(2){background:#f59e0b}.t-dot:nth-child(3){background:#10b981}
+.t-line{font-size:11.5px;line-height:2;color:var(--t3)}
+.t-line .kw{color:#fda4af}
+.t-line .val{color:#c4b5fd}
+.t-line .ok{color:#6ee7b7}
+.t-line .warn{color:#fcd34d}
+.cursor{display:inline-block;width:8px;height:13px;background:#c4b5fd;animation:blink .9s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Buttons */
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{padding:13px 26px;border-radius:13px;font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;letter-spacing:.4px;cursor:pointer;text-decoration:none;transition:.3s;display:inline-flex;align-items:center;gap:9px}
+.btn-back{background:linear-gradient(135deg,#7c3aed,#4338ca 45%,#c026d3);border:none;color:#fff;position:relative;overflow:hidden}
+.btn-back::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#c026d3,#7c3aed);opacity:0;transition:.4s}
+.btn-back:hover::before{opacity:1}
+.btn-back:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(124,58,237,.4)}
+.btn-back span{position:relative;z-index:1;display:flex;align-items:center;gap:8px}
+.btn-login{background:transparent;border:1px solid rgba(244,63,94,.35);color:#fda4af}
+.btn-login:hover{background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.6)}
+</style>
+</head>
+<body>
+<canvas id="cvs"></canvas>
+<div class="nb nb1"></div>
+<div class="nb nb2"></div>
+
+<div class="wrap">
+  <div class="shield"><i class="fas fa-shield-halved"></i></div>
+
+  <div class="code">Error 403</div>
+  <h1>Access Denied</h1>
+  <p class="sub">Clearance level insufficient.</p>
+  <p class="msg">You do not have the required permissions to access this area. This incident has been logged.</p>
+
+  <div class="terminal">
+    <div class="t-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>
+    <div class="t-line"><span class="kw">STATUS</span> &nbsp;&nbsp; <span class="warn">403 FORBIDDEN</span></div>
+    <div class="t-line"><span class="kw">REQUIRED</span> &nbsp;<span class="val">ROLE_ADMIN</span></div>
+    <div class="t-line"><span class="kw">GRANTED</span> &nbsp;&nbsp;<span class="val">ROLE_USER</span></div>
+    <div class="t-line"><span class="kw">ACTION</span> &nbsp;&nbsp;&nbsp;<span class="ok">ACCESS BLOCKED</span></div>
+    <div class="t-line"><span class="kw">&gt;</span> <span class="cursor"></span></div>
+  </div>
+
+  <div class="btns">
+    <a href="/index.html" class="btn btn-back"><span><i class="fas fa-arrow-left"></i> Back to Dashboard</span></a>
+    <a href="/login.html" class="btn btn-login"><i class="fas fa-right-to-bracket"></i> Switch Account</a>
+  </div>
+</div>
+
+<script>
+(function(){const c=document.getElementById('cvs'),x=c.getContext('2d');let W,H,S=[];const rnd=n=>Math.random()*n;function init(){W=c.width=innerWidth;H=c.height=innerHeight;S=Array.from({length:200},()=>({x:rnd(W),y:rnd(H),r:rnd(1.2)+.1,o:rnd(1),d:1,sp:rnd(.003)+.001,pur:Math.random()>.96}));}init();addEventListener('resize',init);function draw(){x.clearRect(0,0,W,H);S.forEach(s=>{s.o+=s.sp*s.d;if(s.o>1){s.o=1;s.d=-1;}if(s.o<.04){s.o=.04;s.d=1;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);if(s.pur){x.fillStyle=`rgba(244,63,94,${s.o*.6})`;x.shadowBlur=10;x.shadowColor='rgba(244,63,94,.8)';}else{x.fillStyle=`rgba(255,255,255,${s.o*.5})`;x.shadowBlur=0;}x.fill();});x.shadowBlur=0;requestAnimationFrame(draw);}draw();})();
+</script>
+</body>
+</html>
