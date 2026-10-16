@@ -303,6 +303,11 @@ footer{font-size:0.84rem;color:var(--t3);text-align:center;padding:24px 0 4px;le
 <div class="nb nb3"></div>
 <div class="nb nb4"></div>
 
+
+<div id="staticHostNotice" role="status" style="display:none;position:relative;z-index:500;margin:12px 18px 0 314px;padding:12px 16px;border:1px solid rgba(245,158,11,.45);border-radius:12px;background:rgba(120,75,5,.22);color:#fde68a;font:14px/1.5 Inter,sans-serif;">
+  <strong>Frontend preview:</strong> This page is hosted on GitHub Pages. Login, profile, history, OTP, and encode/decode actions need the Spring Boot backend and database, so backend actions are unavailable here.
+</div>
+
 <div class="app">
 
 <!-- ── SIDEBAR ──────────────────────────────────────────── -->
@@ -357,7 +362,7 @@ footer{font-size:0.84rem;color:var(--t3);text-align:center;padding:24px 0 4px;le
   </nav>
 
   <div class="sidebar-footer">
-    <form action="/logout" method="POST">
+    <form action="/logout" method="POST" id="logoutForm">
       <button type="submit" class="logout-btn">
         <i class="fas fa-power-off"></i> Logout Securely
       </button>
@@ -726,8 +731,25 @@ footer{font-size:0.84rem;color:var(--t3);text-align:center;padding:24px 0 4px;le
 <div class="toast" id="toast"></div>
 
 <script>
+/* ── HOSTING MODE ── */
+const SV_IS_GITHUB_PAGES = location.hostname.endsWith('github.io');
+function svBackendUnavailable() {
+  if (!SV_IS_GITHUB_PAGES) return false;
+  toast('This action needs the deployed Spring Boot backend. GitHub Pages hosts only the frontend.', 'error');
+  return true;
+}
+if (SV_IS_GITHUB_PAGES) {
+  const notice = document.getElementById('staticHostNotice');
+  if (notice) notice.style.display = 'block';
+  const logoutForm = document.getElementById('logoutForm');
+  if (logoutForm) logoutForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.location.href = 'login.html';
+  });
+}
+
 /* ── GLOBAL THEME ENGINE ── */
-(function(){window.SV_THEME={pages:{dark:{login:'login.html',register:'register.html',forgot:'forgot-password.html',index:'index.html',admin:'admin.html','403':'403.html'},light:{login:'login-light.html',register:'register-light.html',forgot:'forgot-password-light.html',index:'index-light.html',admin:'admin-light.html','403':'403-light.html'}},get:function(){return(location.href.indexOf('-light')>-1)?'light':'dark';},set:function(t){localStorage.setItem('sv_theme',t);},switch:function(k){var c=this.get(),n=c==='dark'?'light':'dark';this.set(n);var t=this.pages[n][k];if(t){window.location.href='/'+t;}else{window.location.reload();}}};})();
+(function(){window.SV_THEME={pages:{dark:{login:'login.html',register:'register.html',forgot:'forgot-password.html',index:'index.html',admin:'admin.html','403':'403.html'},light:{login:'login-light.html',register:'register-light.html',forgot:'forgot-password-light.html',index:'index-light.html',admin:'admin-light.html','403':'403-light.html'}},get:function(){return(location.href.indexOf('-light')>-1)?'light':'dark';},set:function(t){localStorage.setItem('sv_theme',t);},switch:function(k){var c=this.get(),n=c==='dark'?'light':'dark';this.set(n);var t=this.pages[n][k];if(t){window.location.href=t;}else{window.location.reload();}}};})();
 
 // ── CUSTOM CURSOR ─────────────────────────────────────────────
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
@@ -843,22 +865,35 @@ function triggerDownload(url,filename){
 
 // ── LOAD CURRENT USER ─────────────────────────────────────────
 async function loadCurrentUser(){
+  if (SV_IS_GITHUB_PAGES) {
+    document.getElementById('sidebarName').textContent = 'Demo User';
+    document.getElementById('dashName').textContent = 'Demo';
+    document.getElementById('statTotal').textContent = '0';
+    document.getElementById('statEncode').textContent = '0';
+    document.getElementById('statDecode').textContent = '0';
+    document.getElementById('profileNameBig').textContent = 'Demo User';
+    document.getElementById('profileEmailBig').textContent = 'Preview mode — backend not connected';
+    document.getElementById('pName').value = 'Demo User';
+    document.getElementById('pEmail').value = 'Preview mode';
+    return;
+  }
   try{
     const res=await fetch('/api/current-user');
-    if(res.status===401||res.redirected){window.location.href='/login.html';return;}
+    if(res.status===401||res.redirected){window.location.href='login.html';return;}
     if(!res.ok)throw new Error();
     const name=await res.text();
     document.getElementById('sidebarName').textContent=name;
     document.getElementById('dashName').textContent=name.split(' ')[0]||'Operative';
     loadDashStats();
-  }catch(e){window.location.href='/login.html';}
+  }catch(e){window.location.href='login.html';}
 }
 
 // ── DASHBOARD STATS ───────────────────────────────────────────
 async function loadDashStats(){
+  if (svBackendUnavailable()) return;
   try{
     const res=await fetch('/api/my-history');
-    if(res.status===401||res.redirected){window.location.href='/login.html';return;}
+    if(res.status===401||res.redirected){window.location.href='login.html';return;}
     if(!res.ok)throw new Error();
     const text=await res.text();
     if(!text||text.trim()===''){
@@ -880,15 +915,16 @@ async function loadDashStats(){
 
 // ── HISTORY ───────────────────────────────────────────────────
 async function loadHistory(){
+  if (svBackendUnavailable()) return;
   const tbody=document.getElementById('histRows');
   try{
     const res=await fetch('/api/my-history');
-    if(res.status===401||res.redirected){window.location.href='/login.html';return;}
+    if(res.status===401||res.redirected){window.location.href='login.html';return;}
     if(!res.ok)throw new Error();
     const text=await res.text();
     if(!text||text.trim()===''){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:36px;">No operations yet.</td></tr>';return;}
     let arr;
-    try{arr=JSON.parse(text);}catch{window.location.href='/login.html';return;}
+    try{arr=JSON.parse(text);}catch{window.location.href='login.html';return;}
     if(!Array.isArray(arr)||arr.length===0){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:36px;">No operations yet.</td></tr>';return;}
     tbody.innerHTML=arr.slice().reverse().map(h=>`
       <tr>
@@ -902,6 +938,7 @@ async function loadHistory(){
 
 // ── LOAD PROFILE ──────────────────────────────────────────────
 async function loadProfile(){
+  if (svBackendUnavailable()) return;
   try{
     const res=await fetch('/api/profile');
     if(!res.ok)return;
@@ -921,6 +958,7 @@ async function loadProfile(){
 
 // ── SAVE PROFILE ──────────────────────────────────────────────
 async function saveProfile(){
+  if (svBackendUnavailable()) return;
   const btn=document.getElementById('saveProfileBtn');
   btn.disabled=true;
   try{
@@ -935,6 +973,7 @@ async function saveProfile(){
 
 // ── CHANGE PASSWORD ───────────────────────────────────────────
 async function changePassword(){
+  if (svBackendUnavailable()) return;
   const btn=document.getElementById('changePassBtn');
   const cur=document.getElementById('currentPass').value;
   const nw=document.getElementById('newPassInput').value;
@@ -958,6 +997,7 @@ async function changePassword(){
 
 // ── UPLOAD PROFILE PIC ────────────────────────────────────────
 async function uploadProfilePic(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('picUploadInput').files[0];
   if(!file)return;
   const fd=new FormData();fd.append('file',file);
@@ -974,6 +1014,7 @@ async function uploadProfilePic(){
 
 // ── ENCODE IMAGE ──────────────────────────────────────────────
 async function encodeImage(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('imageEncodeFile').files[0];
   const msg=document.getElementById('imageMsg').value.trim();
   const pwd=document.getElementById('imageEncodePassword').value;
@@ -1002,6 +1043,7 @@ async function encodeImage(){
 
 // ── ENCODE AUDIO ──────────────────────────────────────────────
 async function encodeAudio(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('audioEncodeFile').files[0];
   const msg=document.getElementById('audioMsg').value.trim();
   const pwd=document.getElementById('audioEncodePassword').value;
@@ -1030,6 +1072,7 @@ async function encodeAudio(){
 
 // ── ENCODE VIDEO ──────────────────────────────────────────────
 async function encodeVideo(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('videoEncodeFile').files[0];
   const msg=document.getElementById('videoMsg').value.trim();
   const pwd=document.getElementById('videoEncodePassword').value;
@@ -1058,6 +1101,7 @@ async function encodeVideo(){
 
 // ── DECODE IMAGE ──────────────────────────────────────────────
 async function decodeImage(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('imageDecodeFile').files[0];
   const pwd=document.getElementById('imageDecodePassword').value;
   const out=document.getElementById('imageOutput');
@@ -1083,6 +1127,7 @@ async function decodeImage(){
 
 // ── DECODE AUDIO ──────────────────────────────────────────────
 async function decodeAudio(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('audioDecodeFile').files[0];
   const pwd=document.getElementById('audioDecodePassword').value;
   const out=document.getElementById('audioOutput');
@@ -1108,6 +1153,7 @@ async function decodeAudio(){
 
 // ── DECODE VIDEO ──────────────────────────────────────────────
 async function decodeVideo(){
+  if (svBackendUnavailable()) return;
   const file=document.getElementById('videoDecodeFile').files[0];
   const pwd=document.getElementById('videoDecodePassword').value;
   const out=document.getElementById('videoOutput');
